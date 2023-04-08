@@ -8,13 +8,13 @@ DROP TABLE IF EXISTS user;
 """
 curseur.execute(requete)
 
-# requete = """
-# CREATE TABLE user (
-# id SRING PRIMARY KEY,
-# mdp STRING
-# );
-# """
-# curseur.execute(requete)
+requete = """
+CREATE TABLE user (
+id SRING PRIMARY KEY,
+mdp STRING
+);
+"""
+curseur.execute(requete)
 
 #fonction pour qu'un client Sign Up
 
@@ -55,15 +55,11 @@ def verif(id, mdp):
     else:
         return True
 
-print(verif("arnaud","1234" ))
-print(verif("arnaud","6jm" ))
-print(verif("ar","6djm" ))
-
-requete = """
-SELECT *
-FROM user;
-"""
-curseur.execute(requete)
-a = curseur.fetchall()
-print(a)
+# requete = """
+# SELECT *
+# FROM user;
+# """
+# curseur.execute(requete)
+# a = curseur.fetchall()
+# print(a)
 

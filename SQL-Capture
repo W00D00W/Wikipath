@@ -80,29 +80,25 @@ def insert_arc(noeud_1, noeud_2):
 
 
 
-import wikipediaapi
+# import wikipediaapi
 
-wiki_wiki = wikipediaapi.Wikipedia('en')
-page_py = wiki_wiki.page('Python_(programming_language)')
-page_lune = wiki_wiki.page('Lune')
-
-insert_noeud(page_py)
-insert_noeud(page_lune)
-insert_capture(page_py, 1)
-insert_arc(page_py, page_lune)
-
-
-
-requete = """
-SELECT *
-FROM arc
-JOIN noeud ON arc.nom_1 = noeud.nom
-JOIN capture ON capture.id_noeud = noeud.nom
-;
-"""
-curseur.execute(requete)
-a = curseur.fetchall()
-print(a)
+# wiki_wiki = wikipediaapi.Wikipedia('en')
+# page_py = wiki_wiki.page('Python_(programming_language)')
+# page_lune = wiki_wiki.page('Lune')
+# insert_noeud(page_py)
+# insert_noeud(page_lune)
+# insert_capture(page_py, 1)
+# insert_arc(page_py, page_lune)
+# requete = """
+# SELECT *
+# FROM arc
+# JOIN noeud ON arc.nom_1 = noeud.nom
+# JOIN capture ON capture.id_noeud = noeud.nom
+# ;
+# """
+# curseur.execute(requete)
+# a = curseur.fetchall()
+# print(a)
 
 
 
