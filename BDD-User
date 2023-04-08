@@ -1,0 +1,64 @@
+import sqlite3
+
+bdd = sqlite3.connect("bdd_user.db")
+curseur = bdd.cursor()
+
+# requete = """
+# CREATE TABLE user (
+# id SRING PRIMARY KEY,
+# mdp STRING
+# );
+# """
+# curseur.execute(requete)
+
+#fonction pour qu'un client Sign Up
+
+def sign_up(id, mdp):
+    requete = """
+INSERT INTO user
+VALUES ("%s", "%s");
+""" % (id, mdp)
+    curseur.execute(requete)
+
+sign_up("arnaud", "1234")
+sign_up("este", "34")
+
+#Fonction mdp oublié
+
+def mdp_oublie(id, nouv_mdp):
+    requete = """
+    UPDATE user
+    SET mdp = ?
+    WHERE id = ?;
+    """
+    curseur.execute(requete, (nouv_mdp, id))
+
+#vérification des informations lors d'une connection d'un utilisateur
+
+def verif(id, mdp):
+    requete = """
+    SELECT *
+    FROM user
+    WHERE id = ? AND mdp = ?;
+    """
+    curseur.execute(requete, (id, mdp))
+    resultat = curseur.fetchall()
+    if resultat == []:
+        return False
+    elif str(resultat[0][1]) != mdp:
+        return False
+    else:
+        return True
+
+print(verif("arnaud","1234" ))
+print(verif("arnaud","6jm" ))
+print(verif("ar","6djm" ))
+
+requete = """
+SELECT *
+FROM user;
+"""
+curseur.execute(requete)
+a = curseur.fetchall()
+print(a)
+
