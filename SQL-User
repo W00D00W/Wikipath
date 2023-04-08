@@ -3,6 +3,11 @@ import sqlite3
 bdd = sqlite3.connect("bdd_user.db")
 curseur = bdd.cursor()
 
+requete = """
+DROP TABLE IF EXISTS user; 
+"""
+curseur.execute(requete)
+
 # requete = """
 # CREATE TABLE user (
 # id SRING PRIMARY KEY,
