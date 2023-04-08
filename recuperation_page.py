@@ -1,16 +1,9 @@
 import wikipediaapi
+import requests
+from bs4 import BeautifulSoup
 
 wiki = wikipediaapi.Wikipedia('fr')
-
-def tri_lien(voisins, page): ## optimiser !!
-    a = wiki.page(page).links
-    b = []
-    for el in voisins:
-        if a[el].ns == 0:
-            b.append(el)
-    return b
         
-
 ####
 # recuperation des voisins de la page entré en parametre
 ####
@@ -51,6 +44,8 @@ def recuperation_categorie(matiere, n, nbr=0):
     else: 
         return liens_rec(matiere, n, nbr) ## si page 
     
+    print(len(lst_domaine))
+
     lst_domaine = lst_domaine[:min(nbr, len(lst_domaine))] ## réduit la liste au nombre d'élement demandé
     if n < 1:
         return {matiere: lst_domaine}
@@ -60,31 +55,38 @@ def recuperation_categorie(matiere, n, nbr=0):
     return {**{matiere: lst_domaine}, **dico}
 
 
+### fonction pour rechercher matiere et liens en même temps
 def recuperation_page(page, n, nbr=0):
-    """
-    retourne un dictionnaire contenant nbr voisins sur n niveau de profondeur, principalement pour des matieres
-    """
-    if type(page) == type('str'): page = wiki.page(page)
-
-    print(len(wiki.page(page.title).links.values()))
-
-    if page.ns == 14:
-        voisins = [el for el in wiki.page(page.title).categorymembers.values() if el.ns == 0 or el.ns == 14] ## si categorie
-    else: 
-        voisins = [el for el in [el for el in wiki.page(page.title).links.values()] if el.ns == 0 or el.ns == 14] ## recupere une liste filtrée
-    
-    print(len(voisins))
-
-    if nbr == 0: nbr = min(40, len(wiki.page(page.title).links.values()))
-    voisins = voisins[:min(nbr, len(voisins))] ## réduit la liste au nombre d'élement demandé
+    if type(page) == type('str'): 
+        if page.count('Catégorie') > 0:
+            if nbr == 0: nbr = min(40, len(wiki.page(page).links))
+            lst_domaine = [el for el in wiki.page(page).categorymembers.values() if el.ns == 0 or el.ns == 14]
+        else:
+            lst_domaine = [el for el in wiki.page(page).links.values() if el.ns == 0 or el.ns == 14] ## recupere une liste filtrée     elif page.ns == 14:
+            if nbr == 0: nbr = min(40, len(wiki.page(page).links))
+    elif page.ns == 14:
+        if nbr == 0: nbr = min(40, len(wiki.page(page).links))
+        lst_domaine = [el for el in wiki.page(page.title).categorymembers.values() if el.ns == 0 or el.ns == 14]
+    else:
+        if nbr == 0: nbr = min(40, len(wiki.page(page.title).links))
+        lst_domaine = [el for el in wiki.page(page.title).links.values() if el.ns == 0 or el.ns == 14] ## recupere une liste filtrée
+    lst_domaine = lst_domaine[:min(nbr, len(lst_domaine))] ## réduit la liste au nombre d'élement demandé
     if n < 1:
-        return {page: voisins}
+        return {page: lst_domaine}
     dico = {}
-    for element in [recuperation_page(el, n-1, nbr) for el in voisins]:
+    for element in [recuperation_page(el, n-1, nbr) for el in lst_domaine]:
         dico = {**dico, **element}
-    return {**{page: voisins}, **dico}
+    return {**{page: lst_domaine}, **dico}
 
-
+####
+# recherche a partir d'un lien ou d'un nom 
+####
+def recherche(mot):
+    if mot.count('/') > 0:
+        soup = BeautifulSoup(requests.get(mot).text, "html.parser")
+        obj = soup.find('title').text
+        print(obj[:obj.index('— Wikipédia')])
+        return recuperation_page(obj[:obj.index('— Wikipédia')], 2)
 
 
 print(recuperation_page('Catégorie:Histoire', 1))
