@@ -3,57 +3,13 @@ import sqlite3
 bdd = sqlite3.connect("bdd_user.db")
 curseur = bdd.cursor()
 
-# requete = """
-# DROP TABLE IF EXISTS noeud; 
-# """
-# curseur.execute(requete)
-# requete = """
-# CREATE TABLE noeud (
-# id INTEGER PRIMARY KEY,
-# nom STRING
-# );
-# """
-# curseur.execute(requete)
-
-
-
-# requete = """
-# DROP TABLE IF EXISTS arc; 
-# """
-# curseur.execute(requete)
-# requete = """
-# CREATE TABLE arc (
-# nom_1 INTEGER REFERENCES noeud (nom),
-# nom_2 INTEGER REFERENCES noeud (nom),
-# PRIMARY KEY (nom_1, nom_2)
-# );
-# """
-# curseur.execute(requete)
-
-
-
-# requete = """
-# DROP TABLE IF EXISTS capture; 
-# """
-# curseur.execute(requete)
-# requete = """
-# CREATE TABLE capture (
-# id_capture INTEGER PRIMARY KEY,
-# id_user STRING REFERENCES user (id),
-# id_noeud INTEGER REFERENCES noeud (id));
-# """
-# curseur.execute(requete)
-
-
-
 requete = """
-INSERT INTO noeud 
-VALUES (
-1,
-"Lune"
-), (
-2,
-"Soleil"
+DROP TABLE IF EXISTS noeud; 
+"""
+curseur.execute(requete)
+requete = """
+CREATE TABLE noeud (
+nom STRING PRIMARY KEY
 );
 """
 curseur.execute(requete)
@@ -61,10 +17,14 @@ curseur.execute(requete)
 
 
 requete = """
-INSERT INTO arc 
-VALUES (
-"Soleil",
-"Lune"
+DROP TABLE IF EXISTS arc; 
+"""
+curseur.execute(requete)
+requete = """
+CREATE TABLE arc (
+nom_1 INTEGER REFERENCES noeud (nom),
+nom_2 INTEGER REFERENCES noeud (nom),
+PRIMARY KEY (nom_1, nom_2)
 );
 """
 curseur.execute(requete)
@@ -72,13 +32,52 @@ curseur.execute(requete)
 
 
 requete = """
-INSERT INTO capture 
-VALUES (
-1,
-1,
-1);
+DROP TABLE IF EXISTS capture; 
 """
 curseur.execute(requete)
+requete = """
+CREATE TABLE capture (
+id_user STRING REFERENCES user (id),
+id_noeud INTEGER REFERENCES noeud (nom),
+PRIMARY KEY (id_user, id_noeud));
+"""
+curseur.execute(requete)
+
+
+
+def insert_noeud(noeud):
+    requete = """
+    INSERT INTO noeud
+    VALUES (
+    ?
+    );
+    """
+    curseur.execute(requete, (noeud.title,))
+
+
+
+def insert_capture(noeud, id_user):
+    requete = """
+    INSERT INTO capture
+    VALUES (
+    ?,
+    ?
+    );
+    """
+    curseur.execute(requete, (id_user, noeud.title))
+
+
+
+def insert_arc(noeud_1, noeud_2):
+    requete = """
+    INSERT INTO arc
+    VALUES (
+    ?,
+    ?
+    );
+    """
+    curseur.execute(requete, (noeud_1.title, noeud_2.title,))
+
 
 
 import wikipediaapi
@@ -87,26 +86,23 @@ wiki_wiki = wikipediaapi.Wikipedia('en')
 page_py = wiki_wiki.page('Python_(programming_language)')
 page_lune = wiki_wiki.page('Lune')
 
-requete = """
-INSERT INTO arc 
-VALUES (
-?,
-?
-);
-"""
-curseur.execute(requete, (page_py.title, page_lune.title))
+insert_noeud(page_py)
+insert_noeud(page_lune)
+insert_capture(page_py, 1)
+insert_arc(page_py, page_lune)
 
-# def print_links(page):
-#         links = page.links
-#         for title in sorted(links.keys()):
-#             print("%s: %s" % (title, links[title]))
 
-# print_links(page_py)
 
 requete = """
 SELECT *
-FROM arc;
+FROM arc
+JOIN noeud ON arc.nom_1 = noeud.nom
+JOIN capture ON capture.id_noeud = noeud.nom
+;
 """
 curseur.execute(requete)
 a = curseur.fetchall()
 print(a)
+
+
+
