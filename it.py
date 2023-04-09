@@ -22,53 +22,37 @@ class noeud():
         global canvas
         self.affichage = canvas.create_oval(self.x, self.y, self.x+20, self.x+20,fill='red')
 
-### fonction pour rechercher matiere et liens en même temps
-def recuperation_page(page, n, nbr=0):
+def recuperation_page(page, nbr=40):
     if type(page) == type('str'): 
-        if page.count('Catégorie') > 0:
-            if nbr == 0: nbr = min(40, len(wiki.page(page).links))
-            lst_domaine = [el for el in wiki.page(page).categorymembers.values() if el.ns == 0 or el.ns == 14]
-        else:
-            lst_domaine = [el for el in wiki.page(page).links.values() if el.ns == 0 or el.ns == 14] ## recupere une liste filtrée     elif page.ns == 14:
-            if nbr == 0: nbr = min(40, len(wiki.page(page).links))
-    elif page.title.count('Catégorie:')>=1:
-        if nbr == 0: nbr = min(40, len(wiki.page(page).links))
-        lst_domaine = [el for el in wiki.page(page.title).categorymembers.values() if el.ns == 0 or el.ns == 14]
+        page = wiki.page(page)
+    if page.title.count('Catégorie:')>=1:
+            voisins = [el for el in wiki.page(page.title).categorymembers.values() if el.ns == 0 or el.ns == 14]
     else:
-        if nbr == 0: nbr = min(40, len(wiki.page(page.title).links))
-        lst_domaine = [el for el in wiki.page(page.title).links.values() if el.ns == 0 or el.ns == 14] ## recupere une liste filtrée
-    lst_domaine = lst_domaine[:min(nbr, len(lst_domaine))] ## réduit la liste au nombre d'élement demandé
-    if n < 1:
-        return {page.title: noeud(page.title, lst_domaine)}
-    dico = {}
-    for element in [recuperation_page(el, n-1, nbr) for el in lst_domaine]:
-        dico = {**dico, **element}
-    return {**{page.title: noeud(page.title, lst_domaine)}, **dico}
+        voisins = [el for el in wiki.page(page.title).links.values() if el.ns == 0 or el.ns == 14] ## recupere une liste filtrée
+    voisins = voisins[:min(nbr, len(voisins))] ## réduit la liste au nombre d'élement demandé
+    return noeud(page.title, voisins)
 
 
 
-
-# def graphe(dico):
-#     position = [50,50]
-#     val = [el.val for el in dico.values()]
-#     print(val)
-#     for val in dico.values():
-#         val.x, val.y = position[0], position[1]
-#         if len(val.voisins)<8:
-#             angle = 360 / len(val.voisins)
-#             lst_angle = [el*angle for el in range(len(val.voisins))]
-#         for i in range(len(val.voisins)):
-#             dico[val.voisins[i]].x = val.x + 8 * math.cos(lst_angle[i]*math.pi / 180)
-#             dico[val.voisins[i]].y = val.y + 8 * math.sin(lst_angle[i]*math.pi / 180)
+def graphe(dico):
+    position = [50,50]
+    val = [el.val for el in dico.values()]
+    print(val)
+    for val in dico.values():
+        val.x, val.y = position[0], position[1]
+        if len(val.voisins)<8:
+            angle = 360 / len(val.voisins)
+            lst_angle = [el*angle for el in range(len(val.voisins))]
+        for i in range(len(val.voisins)):
+            dico[val.voisins[i]].x = val.x + 8 * math.cos(lst_angle[i]*math.pi / 180)
+            dico[val.voisins[i]].y = val.y + 8 * math.sin(lst_angle[i]*math.pi / 180)
 
 
     
 
 
-# graphe(recuperation_page('Catégorie:Histoire', 1))
+# graphe(recuperation_page('Catégorie:Histoire'))
 
-for element in recuperation_page('Catégorie:Histoire', 1).values():
-    print(element.val)
 
 
 
