@@ -87,6 +87,14 @@ def create_rounded_rectangle(canvas, x1, y1, x2, y2, radius, **kwargs):
               x1, y1]
     return canvas.create_polygon(points, smooth=True, **kwargs)
 
+
+
+def arc(obj):
+    for bulle in obj.voisins:
+        canvas.create_line(obj.x, obj.y, bulle.x, bulle.y, fill="#026773")
+
+
+
 ## fonction qui affiche le graphe
 def graphe(obj):
     position = [400,400]
@@ -104,6 +112,8 @@ def graphe(obj):
                     obj.voisins[-1].y = obj.y + lst_cercle[i][1] * math.sin(lst_angle.pop(0)*math.pi / 180)
                     obj.voisins[-1].affichage_noeud()
     obj.affichage_noeud()
+    arc(obj)
+    
 
 ### variables
 page_courante = recuperation_page('Wikipédia')
@@ -121,6 +131,8 @@ def clic(event):
             page_courante = recuperation_page(v.val)
             graphe(page_courante)
             break
+
+
 
 
 
