@@ -125,6 +125,7 @@ def clic(event):
     x = event.x
     y = event.y
 
+    
     for v in page_courante.voisins:
         if x > v.x and x < v.x + v.largeur  and  y > v.y and y < v.y+v.hauteur:
             canvas.delete('all')
