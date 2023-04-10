@@ -12,6 +12,7 @@ canvas = Canvas(tk,width = 1000, height = 1000 , bd=0, bg="white")
 canvas.pack(padx=10,pady=10)
 
 
+
 class bulle:
     def __init__(self, val, pos = (0,0)):
         self.val = val
@@ -19,6 +20,8 @@ class bulle:
         self.y = pos[1]
         self.affichage = None
         self.affichage_texte = None
+        self.largeur = None
+        self.hauteur = None
 
     
     def affichage_noeud(self):
@@ -26,9 +29,13 @@ class bulle:
         padding = 10 # espace de rembourrage entre le texte et le bord du rectangle
         bbox = canvas.bbox(canvas.create_text(self.x, self.y, text=self.val)) # dimensions du rectangle englobant
         bbox = (bbox[0]-padding, bbox[1]-padding, bbox[2]+padding, bbox[3]+padding) # ajout de rembourrage
+        self.largeur = bbox[2] - bbox[0]
+        self.hauteur = bbox[3] - bbox[1]
         radius = 20 # rayon des coins arrondis
         self.affichage = create_rounded_rectangle(canvas, *bbox, radius=radius, fill="#3CA6A6", outline="#026773", width=2)
         self.affichage_texte = canvas.create_text(self.x, self.y, text=self.val, width=bbox[2]-bbox[0]-2*padding, justify=CENTER, fill="#FFFFFF")
+        self.x = bbox[0]
+        self.y = bbox[1]
 
 
 class noeud(bulle):
@@ -98,13 +105,25 @@ def graphe(obj):
                     obj.voisins[-1].affichage_noeud()
     obj.affichage_noeud()
 
-            
+### variables
+page_courante = recuperation_page('Wikipédia')
+graphe(page_courante)
 
     
+def clic(event):
+    global page_courante, canvas
+    x = event.x
+    y = event.y
+
+    for v in page_courante.voisins:
+        if x > v.x and x < v.x + v.largeur  and  y > v.y and y < v.y+v.hauteur:
+            canvas.delete('all')
+            page_courante = recuperation_page(v.val)
+            graphe(page_courante)
+            break
 
 
 
-graphe(recuperation_page('Or'))
 
 
 
@@ -114,11 +133,8 @@ graphe(recuperation_page('Or'))
 
 
 
-#Creation  d'un bouton "Quitter":
-Bouton_Quitter=Button(tk, text ='Quitter', command = tk.destroy)
-#On ajoute l'affichage du bouton dans la fenêtre tk:
-Bouton_Quitter.pack()
 
+tk.bind('<Button-1>', clic)
 
 tk.mainloop()
 
