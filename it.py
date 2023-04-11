@@ -21,8 +21,20 @@ hauteur = tk.winfo_height()
 
 print(largeur, hauteur)
 
-canvas = Canvas(tk,width = (largeur/4)*3, height = hauteur , bd=0, bg="white")
-canvas.grid(row=20, column=0, columnspan=4, pady=10)
+login_button = Button(tk, text="Se connecter / S'inscrire", font=("Helvetica", 12), bg="#3CA6A6", fg="white",activebackground="#3CA6A6", activeforeground="white")
+login_button.grid(row=0, column=0, padx=0, pady=15)
+
+recherche_page = Label(tk, text="Rechercher une page", font=("Helvetica", 12), fg="white", bg="#3CA6A6")
+recherche_page.grid(row=0, column=6, padx=0, pady=15)
+recherche_page_entry = Entry(tk, font=("Helvetica", 12))
+recherche_page_entry.grid(row=0, column=9, padx=0, pady=15)
+
+quitter_button = Button(tk, text="Quitter", font=("Helvetica", 12), bg="#3CA6A6", fg="white",activebackground="#3CA6A6", activeforeground="white")
+quitter_button.grid(row=0, column=4, padx=0, pady=15)
+
+canvas = Canvas(tk,width = (largeur/4)*3, height = hauteur, bd=0, bg="white")
+canvas.grid(row=20, column=0, columnspan=4)
+
 ####
 
 ### classes 
