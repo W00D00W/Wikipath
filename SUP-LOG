@@ -1,4 +1,142 @@
 import tkinter as tk
+import sqlite3
+
+
+bdd = sqlite3.connect("bdd_user.db")
+curseur = bdd.cursor()
+
+
+requete = """
+DROP TABLE IF EXISTS user; 
+"""
+curseur.execute(requete)
+requete = """
+CREATE TABLE user (
+id SRING PRIMARY KEY,
+mdp STRING
+);
+"""
+curseur.execute(requete)
+
+
+
+requete = """
+DROP TABLE IF EXISTS capture; 
+"""
+curseur.execute(requete)
+requete = """
+CREATE TABLE capture (
+id_user STRING REFERENCES user (id),
+nom_noeud STRING,
+PRIMARY KEY (id_user, nom_noeud));
+"""
+curseur.execute(requete)
+
+
+
+#fonction pour qu'un client Sign Up
+
+def sign_up(id, mdp):
+    requete = """
+INSERT INTO user
+VALUES ("%s", "%s");
+""" % (id, mdp)
+    curseur.execute(requete)
+
+sign_up("arnaud", "1234")
+sign_up("este", "34")
+
+#Fonction mdp oublié
+
+def mdp_oublie(id, nouv_mdp):
+    requete = """
+    UPDATE user
+    SET mdp = ?
+    WHERE id = ?;
+    """
+    curseur.execute(requete, (nouv_mdp, id))
+
+#vérification des informations lors d'une connection d'un utilisateur
+
+def verif(id, mdp):
+    requete = """
+    SELECT *
+    FROM user
+    WHERE id = ? AND mdp = ?;
+    """
+    curseur.execute(requete, (id, mdp))
+    resultat = curseur.fetchall()
+    if resultat == []:
+        return False
+    elif str(resultat[0][1]) != mdp:
+        return False
+    else:
+        return True
+    
+
+
+def insert_capture(noeud, id_user):
+    """param: noeud nom du lien STR, id_user STR"""
+    requete = """
+    INSERT INTO capture
+    VALUES (
+    ?,
+    ?
+    );
+    """
+    curseur.execute(requete, (id_user, noeud))
+
+
+
+def enregistrer_noeud(noeud_obj, id_user ):
+    #le param "noeud_obj" est un objet
+    insert_capture(noeud_obj.val, id_user)
+
+
+
+def chercher_captures(id_user):
+    requete = """
+    SELECT nom_noeud
+    FROM capture
+    WHERE id_user = ?;
+    """
+    curseur.execute(requete, (id_user,))
+    a = curseur.fetchall()
+    return a 
+
+
+
+
+
+
+# {'Catégorie:Histoire': [Histoire (id: ??, ns: 0), Catégorie:Histoire par groupe ethnique (id: ??, ns: 14), Catégorie:Histoire
+
+
+# import wikipediaapi
+
+# wiki_wiki = wikipediaapi.Wikipedia('en')
+# page_py = wiki_wiki.page('Python_(programming_language)')
+# page_lune = wiki_wiki.page('Lune')
+# insert_noeud(page_py)
+# # insert_noeud(page_lune)
+# insert_capture(page_py, 1)
+# insert_arc(page_py, page_lune)
+# requete = """
+# SELECT *
+# FROM arc
+# JOIN noeud ON arc.nom_1 = noeud.nom
+# JOIN capture ON capture.id_noeud = noeud.nom
+# ;
+# """
+# curseur.execute(requete)
+# a = curseur.fetchall()
+# print(a)
+
+# print(noeud_existe(page_py))
+# print(noeud_existe(page_lune))
+
+
+
 
 # définition de la fonction pour créer un rectangle avec des bords arrondis
 def create_rounded_rectangle(canvas, x1, y1, x2, y2, radius, **kwargs):
@@ -27,17 +165,19 @@ def create_rounded_rectangle(canvas, x1, y1, x2, y2, radius, **kwargs):
 
 # Fonction pour se connecter
 def login():
-    username = username_entry.get()
-    password = password_entry.get()
-    print(f"Username: {username}")
-    print(f"Password: {password}")
+    id = id_entry.get()
+    mdp = mdp_entry.get()
+    print(f"id: {id}")
+    print(f"mdp: {mdp}")
+    print(verif(id, mdp))
 
 # Fonction pour s'inscrire
 def signup():
-    username = username_entry.get()
-    password = password_entry.get()
-    print(f"New username: {username}")
-    print(f"New password: {password}")
+    id = id_entry.get()
+    mdp = mdp_entry.get()
+    print(f"New id: {id}")
+    print(f"New mdp: {mdp}")
+    sign_up(id, mdp)
 
 # Création de la fenêtre
 root = tk.Tk()
@@ -50,30 +190,34 @@ title_label = tk.Label(root, text="Connexion / Inscription", font=("Helvetica", 
 title_label.pack(pady=10)
 
 # Création des champs de saisie
-username_label = tk.Label(root, text="Nom d'utilisateur", font=("Helvetica", 12), fg="white", bg="#3CA6A6")
-username_label.pack()
-username_entry = tk.Entry(root, font=("Helvetica", 12))
-username_entry.pack(pady=5)
+id_label = tk.Label(root, text="Nom d'utilisateur", font=("Helvetica", 12), fg="white", bg="#3CA6A6")
+id_label.pack()
+id_entry = tk.Entry(root, font=("Helvetica", 12))
+id_entry.pack(pady=5)
 
-password_label = tk.Label(root, text="Mot de passe", font=("Helvetica", 12), fg="white", bg="#3CA6A6")
-password_label.pack()
-password_entry = tk.Entry(root, show="*", font=("Helvetica", 12))
-password_entry.pack(pady=5)
+mdp_label = tk.Label(root, text="Mot de passe", font=("Helvetica", 12), fg="white", bg="#3CA6A6")
+mdp_label.pack()
+mdp_entry = tk.Entry(root, show="*", font=("Helvetica", 12))
+mdp_entry.pack(pady=5)
 
 # Création d'un cadre pour les boutons
 button_frame = tk.Frame(root, bg="white")
 button_frame.pack()
 
 # Création des boutons de connexion / inscription
-login_button = tk.Button(button_frame, text="Se connecter", font=("Helvetica", 12), bg="#3CA6A6", fg="white",
-                         activebackground="#3CA6A6", activeforeground="white", command=login)
+login_button = tk.Button(button_frame, text="Se connecter", font=("Helvetica", 12), bg="#3CA6A6", fg="white", command=login)
 login_button.pack(side="left", padx=10, pady=20)
 
-signup_button = tk.Button(button_frame, text="S'inscrire", font=("Helvetica", 12), bg="#3CA6A6", fg="white",
-                          activebackground="#3CA6A6", activeforeground="white", command=signup)
+signup_button = tk.Button(button_frame, text="S'inscrire", font=("Helvetica", 12), bg="#3CA6A6", fg="white", command=signup)
 signup_button.pack(side="left", padx=10, pady=20)
 
 # Lancement de la boucle principale
 root.mainloop()
 
-
+# requete="""
+# SELECT * 
+# FROM user;
+# """
+# curseur.execute(requete)
+# a = curseur.fetchall()
+# print(a)
