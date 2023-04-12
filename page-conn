@@ -1,0 +1,47 @@
+from tkinter import *
+tk = Tk()
+tk.attributes('-fullscreen', True)
+tk.update()
+
+def arrondi(x1, y1, x2, y2, radius, **kwargs):
+    points = [x1+radius, y1,
+            x1+radius, y1,
+            x2-radius, y1,
+            x2-radius, y1,
+            x2, y1,
+            x2, y1+radius,
+            x2, y1+radius,
+            x2, y2-radius,
+            x2, y2-radius,
+            x2, y2,
+            x2-radius, y2,
+            x2-radius, y2,
+            x1+radius, y2,
+            x1+radius, y2,
+            x1, y2,
+            x1, y2-radius,
+            x1, y2-radius,
+            x1, y1+radius,
+            x1, y1+radius,
+            x1, y1]
+    return points
+
+def create_rounded_rectangle(canvas, x1, y1, x2, y2, radius, **kwargs):
+    """
+    renvoie un objet canva rectangle avec les bords arrondis
+    """
+    points = arrondi(x1, y1, x2, y2, radius)
+    return canvas.create_polygon(points, smooth=True, **kwargs)
+
+
+title_label = Label(tk, text="Espace membre", font=("Helvetica", 20), fg="white", bg="#3CA6A6")
+title_label.grid(row=0, column=0, padx=30, pady=15)
+
+recherche_page = Label(tk, text="Pages enregistrées", fg="white", bg="#3CA6A6")
+recherche_page.grid(row=4, column=0, padx=0, pady=50)
+
+for i in range(10):
+    btn = Button(tk, text="bulle enregistrée n°%s"% i, font=("Helvetica", 12), bg="#3CA6A6", fg="white",activebackground="#3CA6A6", activeforeground="white")
+    btn.grid(row=i+9, column=0, pady= 3)
+
+tk.mainloop()
