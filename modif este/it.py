@@ -7,12 +7,10 @@ import time
 import random
 import copy
 import asyncio
-import customtkinter 
 
 ### 
 # definition de variables propres a tkinter et tkinter
 wiki = wikipediaapi.Wikipedia('fr')
-
 
 tk = Tk()
 tk.attributes('-fullscreen', True)
@@ -23,8 +21,19 @@ hauteur = tk.winfo_height()
 
 print(largeur, hauteur)
 
-canvas = Canvas(tk,width = (largeur/4)*3, height = hauteur , bd=0, bg="white")
-canvas.grid(row=1, column=0, columnspan=3,rowspan=3, pady=10)
+login_button = Button(tk, text="Se connecter / S'inscrire", font=("Helvetica", 12), bg="#3CA6A6", fg="white",activebackground="#3CA6A6", activeforeground="white")
+login_button.grid(row=0, column=0, padx=0, pady=15)
+
+recherche_page = Label(tk, text="Rechercher une page", font=("Helvetica", 12), fg="white", bg="#3CA6A6")
+recherche_page.grid(row=0, column=6, padx=0, pady=15)
+recherche_page_entry = Entry(tk, font=("Helvetica", 12))
+recherche_page_entry.grid(row=0, column=9, padx=0, pady=15)
+
+quitter_button = Button(tk, text="Quitter", font=("Helvetica", 12), bg="#3CA6A6", fg="white",activebackground="#3CA6A6", activeforeground="white")
+quitter_button.grid(row=0, column=4, padx=0, pady=15)
+
+canvas = Canvas(tk,width = (largeur/4)*3, height = hauteur, bd=0, bg="white")
+canvas.grid(row=20, column=0, columnspan=4)
 
 ####
 
@@ -183,18 +192,17 @@ def recuperation_page(page, nbr=48):
     page : objet wikipedia ou chaine de caractere, n : un entier positif
     renvoie un objet noeud avec n voisins
     """
-    global page_sauvegarde
+    global page_courante
     if type(page) == type('str'): 
         page = wiki.page(page)
     if page.exists() != True:
-        page = page_sauvegarde
+        page = page_courante
     if page.title.count('Catégorie:')>=1:
         voisins = [bulle(el.title) for el in wiki.page(page.title).categorymembers.values() if el.ns == 0 or el.ns == 14]
     else:
         voisins = [bulle(el.title) for el in wiki.page(page.title).links.values() if el.ns == 0 or el.ns == 14] ## recupere une liste filtrée
     random.shuffle(voisins)
     voisins = voisins[:min(nbr, len(voisins))] ## réduit la liste au nombre d'élement demandé
-    page_sauvegarde = page
     return noeud(page.title, voisins)
 
 
@@ -241,16 +249,6 @@ def create_rounded_rectangle(canvas, x1, y1, x2, y2, radius, **kwargs):
     points = arrondi(x1, y1, x2, y2, radius)
     return canvas.create_polygon(points, smooth=True, **kwargs)
 
-texte = [None, None, None]
-texte[0] = Label(tk, text = '', font='Arial 20')
-texte[0].grid(row=1, column=3, columnspan=1, pady=10)
-
-texte[1] = Label(tk, text='', justify='left', font='Arial 10')
-texte[1].grid(row=2, column=3, columnspan=1, pady=10)
-
-texte[2] = Label(tk, text='', justify='left', font='Arial 10')
-texte[2].grid(row=3, column=3, columnspan=1, pady=10)
-
 
 ## fonction qui affiche le graphe
 def graphe(obj):
@@ -270,53 +268,16 @@ def graphe(obj):
                     obj.voisins.append(lst_cercle[i][0].pop(0))
                     obj.voisins[-1].x = obj.x + lst_cercle[i][1] * math.cos(lst_angle[0]*math.pi / 180)
                     obj.voisins[-1].y = obj.y + lst_cercle[i][1] * math.sin(lst_angle.pop(0)*math.pi / 180)
-    affichage_page(obj)
     obj.affichage_noeud()
-
-
-
-
-def affichage_page(page):
-    global texte
-    page = wiki.page(page.val)
-    sum = page.summary
-    lst = sum.split(' ')
-    cpt = 0
-    chaine = ''
-    while len(lst) > 0:
-        if cpt+len(lst[0]) < 55:
-            cpt += len(lst[0])
-            chaine += lst.pop(0) + ' '
-        else:
-            cpt = 0
-            chaine += '\n'
-    
-    titre = page.title
-    lst = titre.split(' ')
-    cpt = 0
-    titre_modif = ''
-    while len(lst) > 0:
-        if cpt+len(lst[0]) < 20:
-            cpt += len(lst[0])
-            titre_modif += lst.pop(0) + ' '
-        else:
-            cpt = 0
-            titre_modif += '\n'
-    
-    texte[0].config(text= titre_modif)
-    texte[1].config(text=chaine)
-    texte[2].config(text=page.fullurl)
 
 
 
 
 ### variables
 page_courante = recuperation_page('Wikipédia')
-page_sauvegarde = page_courante
 item = None
 pos = [0,0]
 graphe(page_courante)
-
 
 
 ### fonctions tkinter
@@ -330,7 +291,7 @@ def actu_pos(event):
 
 def clic(event):
     """
-    regenere un graphe a chaque double clic
+    regenere un graph a chaque double clic
     """
     global page_courante, canvas
     x = event.x
