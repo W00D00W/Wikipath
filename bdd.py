@@ -1,5 +1,4 @@
 import sqlite3
-from it import *
 
 bdd = sqlite3.connect("bdd_user.db")
 curseur = bdd.cursor()
@@ -27,7 +26,7 @@ requete = """
 CREATE TABLE capture (
 id_user STRING REFERENCES user (id),
 nom_noeud STRING,
-PRIMARY KEY (id_user, id_noeud));
+PRIMARY KEY (id_user, nom_noeud));
 """
 curseur.execute(requete)
 
