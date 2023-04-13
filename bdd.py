@@ -32,8 +32,7 @@ curseur.execute(requete)
 
 
 
-#fonction pour qu'un client Sign Up
-
+#fonction pour qu'un client S'inscrive au site 
 def sign_up(id, mdp):
     requete = """
 INSERT INTO user
@@ -41,11 +40,8 @@ VALUES ("%s", "%s");
 """ % (id, mdp)
     curseur.execute(requete)
 
-sign_up("arnaud", "1234")
-sign_up("este", "34")
 
 #Fonction mdp oublié
-
 def mdp_oublie(id, nouv_mdp):
     requete = """
     UPDATE user
@@ -54,8 +50,9 @@ def mdp_oublie(id, nouv_mdp):
     """
     curseur.execute(requete, (nouv_mdp, id))
 
-#vérification des informations lors d'une connection d'un utilisateur
 
+
+#vérification des informations lors d'une connection d'un utilisateur
 def verif(id, mdp):
     requete = """
     SELECT *
@@ -71,29 +68,8 @@ def verif(id, mdp):
     else:
         return True
 
-# requete = """
-# SELECT *
-# FROM user;
-# """
-# curseur.execute(requete)
-# a = curseur.fetchall()
-# print(a)
 
-
-
-# requete = """
-# DROP TABLE IF EXISTS noeud; 
-# """
-# curseur.execute(requete)
-
-
-# requete = """
-# DROP TABLE IF EXISTS arc; 
-# """
-# curseur.execute(requete)
-
-
-
+#insérer dans la table "capture"
 def insert_capture(noeud, id_user):
     """param: noeud nom du lien STR, id_user STR"""
     requete = """
@@ -106,7 +82,7 @@ def insert_capture(noeud, id_user):
     curseur.execute(requete, (id_user, noeud))
 
 
-
+#appel la fonction d'insertion
 def enregistrer_noeud(noeud_obj, id_user ):
     #le param "noeud_obj" est un objet
     insert_capture(noeud_obj.val, id_user)
@@ -122,38 +98,4 @@ def chercher_captures(id_user):
     curseur.execute(requete, (id_user,))
     a = curseur.fetchall()
     return a 
-
-
-
-
-
-
-# {'Catégorie:Histoire': [Histoire (id: ??, ns: 0), Catégorie:Histoire par groupe ethnique (id: ??, ns: 14), Catégorie:Histoire
-
-
-# import wikipediaapi
-
-# wiki_wiki = wikipediaapi.Wikipedia('en')
-# page_py = wiki_wiki.page('Python_(programming_language)')
-# page_lune = wiki_wiki.page('Lune')
-# insert_noeud(page_py)
-# # insert_noeud(page_lune)
-# insert_capture(page_py, 1)
-# insert_arc(page_py, page_lune)
-# requete = """
-# SELECT *
-# FROM arc
-# JOIN noeud ON arc.nom_1 = noeud.nom
-# JOIN capture ON capture.id_noeud = noeud.nom
-# ;
-# """
-# curseur.execute(requete)
-# a = curseur.fetchall()
-# print(a)
-
-# print(noeud_existe(page_py))
-# print(noeud_existe(page_lune))
-
-
-
 
