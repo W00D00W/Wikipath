@@ -278,6 +278,27 @@ class noeud(bulle):
                 return v
 
 
+### pile
+class pile:
+    def __init__(self):
+        self.pile = []
+    
+    def ajout_pile(self, x):
+        self.pile.append(bulle(x.val, (x.x, x.y)))
+    
+    def retirer_pile(self):
+        return self.pile.pop(-1)
+    
+    def deplacer_centre(self, x, y):
+        self.pile[-1].x = self.pile[-1].x - x
+        self.pile[-1].y = self.pile[-1].y - y
+        print(self.pile[-1].x, self.pile[-1].y)
+
+    def affiche_pile(self):
+        global it
+        print(len(self.pile))
+        for element in self.pile:
+            element.affichage_noeud()
     
 
 ### page
@@ -361,6 +382,7 @@ def create_rounded_rectangle(it, x1, y1, x2, y2, radius, **kwargs):
     points = arrondi(x1, y1, x2, y2, radius)
     return it.create_polygon(points, smooth=True, **kwargs)
 
+pile_page = pile()
 
 ## fonction qui affiche le graphe
 def graphe(obj):
@@ -368,7 +390,7 @@ def graphe(obj):
     obj : un noeud contenant une page wikipedia ainsi que ses voisins
     """
 
-    position = [400,400]
+    position = [500,480]
     obj.x, obj.y = position[0], position[1]
     lst_angle = [el*(360 / len(obj.voisins)) for el in range(len(obj.voisins))]
 
@@ -385,6 +407,8 @@ def graphe(obj):
 
     it.affichage_page(obj)
     obj.affichage_noeud()
+    pile_page.affiche_pile()
+
 
 
 ### variables
@@ -393,6 +417,7 @@ item = None
 pos = [0,0]
 co = 0
 graphe(page_courante)
+
 
 ### fonctions tkinter
 def actu_pos(event):
@@ -419,7 +444,12 @@ def clic(event):
    
     for v in page_courante.voisins:
         if x > v.x and x < v.x + v.largeur  and  y > v.y and y < v.y+v.hauteur:
+            it.canvas.move('all', 500, 480)
+            page_courante.actualisation()
+            time.sleep(1)
             it.canvas.delete('all')
+            pile_page.ajout_pile(page_courante)
+            pile_page.deplacer_centre(v.x, v.y)
             page_courante = recuperation_page(v.val)
             graphe(page_courante)
             break
