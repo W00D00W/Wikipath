@@ -5,8 +5,6 @@ import math
 from noeud import *
 from pile import *
 
-
-
 class page:
     def __init__(self):
         self.wiki = wikipediaapi.Wikipedia('fr')
