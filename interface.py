@@ -163,7 +163,6 @@ class interface:
     def genere_graphe(self):
         self.arbre = self.graphe.graphe(self, self.page.page_courante)
 
-
     ### actions
     def actu_pos(self, event):
         """
@@ -172,7 +171,7 @@ class interface:
         self.pos[0], self.pos[1] = event.x, event.y
     
         if self.item == None:
-            self.item = self.page.page_courante.trouve_item(it.canvas.find_closest(event.x, event.y))
+            self.item = self.page.page_courante.trouve_item(self.canvas.find_closest(event.x, event.y))
             if self.item != None:
                 if self.item.contient(event.x, event.y) != True:
                     self.item = None
@@ -225,6 +224,9 @@ class interface:
         else:
             self.canvas.move('graphe', event.x-self.pos[0], event.y - self.pos[1])
             self.pos[0], self.pos[1] = event.x, event.y
+            
+
+            
         
 
     def item_remove(self, event):

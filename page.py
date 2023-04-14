@@ -22,6 +22,7 @@ class page:
             page = self.wiki.page(self.page_courante.val)
         if type(page) == type('str'): 
             page = self.wiki.page(page)
+        print(page)
         if page.exists() != True:
             page = self.page_sauvegarde
         if page.title.count('Catégorie:')>=1:
