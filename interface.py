@@ -35,14 +35,14 @@ class interface:
         self.co = 0
 
         customtkinter.set_appearance_mode("Dark")
-        self.tk.geometry(str(self.tk.winfo_screenwidth())+'x'+str(self.tk.winfo_screenheight()))
+        self.tk.geometry(str(self.tk.winfo_screenwidth())+'dx'+str(self.tk.winfo_screenheight())+'d')
         self.tk.update()
 
-        largeur = self.tk.winfo_width()
-        hauteur = self.tk.winfo_height()
+        largeur = self.tk.winfo_screenwidth()
+        hauteur = self.tk.winfo_screenheight()
 
         ### affichage canva
-        self.canvas = Canvas(self.tk,width = (largeur/4)*3-30, height = hauteur-160 , bd=0, bg="white")
+        self.canvas = Canvas(self.tk,width = largeur, height = hauteur , bd=0, bg="white")
         self.canvas.grid(row=1, column=0, columnspan=3,rowspan=3, padx=15)
 
         self.tk.grid_columnconfigure(3, weight = 1)
