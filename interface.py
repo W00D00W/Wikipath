@@ -30,6 +30,9 @@ class interface:
         self.tk = customtkinter.CTk()
         self.graphe = graphe()
         self.profondeur = 48
+        self.item = None
+        self.pos = [0,0]
+        self.co = 0
 
         customtkinter.set_appearance_mode("Dark")
         self.tk.geometry(str(self.tk.winfo_screenwidth())+'x'+str(self.tk.winfo_screenheight()))
@@ -166,21 +169,18 @@ class interface:
         """
         actualise pos a chaque clic
         """
-        global item, pos, co
-
-        pos[0], pos[1] = event.x, event.y
+        self.pos[0], self.pos[1] = event.x, event.y
     
-        if item == None:
-            item = self.page.page_courante.trouve_item(it.canvas.find_closest(event.x, event.y))
-            if item != None:
-                if item.contient(event.x, event.y) != True:
-                    item = None
+        if self.item == None:
+            self.item = self.page.page_courante.trouve_item(it.canvas.find_closest(event.x, event.y))
+            if self.item != None:
+                if self.item.contient(event.x, event.y) != True:
+                    self.item = None
 
     def clic(self, event):
         """
         regenere un graphe a chaque double clic
         """
-        global it
         x = event.x
         y = event.y
         
@@ -204,29 +204,27 @@ class interface:
         """
         bouge l'ensemble ou un item en fonction de la souris
         """
-        global item, pos
-
-        if item is not None:
-            x, y = event.x-item.largeur/2, event.y-item.hauteur/2
-            bbox = self.graphe.arrondi(x, y, x+item.largeur, y+item.hauteur, 20)
-            self.canvas.coords(item.affichage[0], *bbox)
-            self.canvas.coords(item.affichage[1], x+item.largeur/2, y+item.hauteur/2)
-            pos = self.canvas.coords(item.affichage[2])
-            if item.etat == False:
-                if self.page.page_courante.voisins[self.page.page_courante.voisins.index(item)+1].etat == False:
-                    pos[0] = self.page.page_courante.voisins[self.page.page_courante.voisins.index(item)+1].x+item.largeur/2
-                    pos[1] = self.page.page_courante.voisins[self.page.page_courante.voisins.index(item)+1].y+item.hauteur/2 
-                if self.page.page_courante.voisins[self.page.page_courante.voisins.index(item)-1].etat == False:
-                    item2 = self.page.page_courante.voisins[self.page.page_courante.voisins.index(item)-1]
-                    self.canvas.coords(item2.affichage[2], item2.x+item2.largeur/2, item2.y+item2.hauteur/2, item.x+item.largeur/2, item.y+item.hauteur/2)
-                    item2.actualisation(self)
-            self.canvas.coords(item.affichage[2], pos[0], pos[1], x+item.largeur/2, y+item.hauteur/2)
+        if self.item is not None:
+            x, y = event.x-item.largeur/2, event.y-self.item.hauteur/2
+            bbox = self.graphe.arrondi(x, y, x+self.item.largeur, y+self.item.hauteur, 20)
+            self.canvas.coords(self.item.affichage[0], *bbox)
+            self.canvas.coords(self.item.affichage[1], x+self.item.largeur/2, y+self.item.hauteur/2)
+            self.pos = self.canvas.coords(self.item.affichage[2])
+            if self.item.etat == False:
+                if self.page.page_courante.voisins[self.page.page_courante.voisins.index(self.item)+1].etat == False:
+                    self.pos[0] = self.page.page_courante.voisins[self.page.page_courante.voisins.index(self.item)+1].x+self.item.largeur/2
+                    self.pos[1] = self.page.page_courante.voisins[self.page.page_courante.voisins.index(self.item)+1].y+self.item.hauteur/2 
+                if self.page.page_courante.voisins[self.page.page_courante.voisins.index(self.item)-1].etat == False:
+                    self.item2 = self.page.page_courante.voisins[self.page.page_courante.voisins.index(self.item)-1]
+                    self.canvas.coords(self.item2.affichage[2], self.item2.x+self.item2.largeur/2, self.item2.y+self.item2.hauteur/2, self.item.x+self.item.largeur/2, self.item.y+self.item.hauteur/2)
+                    self.item2.actualisation(self)
+            self.canvas.coords(self.item.affichage[2], self.pos[0], self.pos[1], x+self.item.largeur/2, y+self.item.hauteur/2)
             
-            item.actualisation(self)
+            self.item.actualisation(self)
             
         else:
-            self.canvas.move('graphe', event.x-pos[0], event.y - pos[1])
-            pos[0], pos[1] = event.x, event.y
+            self.canvas.move('graphe', event.x-self.pos[0], event.y - self.pos[1])
+            self.pos[0], self.pos[1] = event.x, event.y
         
 
     def item_remove(self, event):

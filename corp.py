@@ -17,9 +17,6 @@ if __name__ == "__main__":
 
 
 #définition des variables
-item = None
-pos = [0,0]
-co = 0
 
 
 
