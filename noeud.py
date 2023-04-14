@@ -1,5 +1,6 @@
 from tkinter import *
-import customtkinter
+
+
 
 class bulle:
     def __init__(self, val, pos = (0,0)):

@@ -1,8 +1,11 @@
 import wikipediaapi
-from noeud import *
 import random
-from pile import *
 import math 
+
+from noeud import *
+from pile import *
+
+
 
 class page:
     def __init__(self):
