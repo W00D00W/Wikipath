@@ -36,23 +36,23 @@ class bulle:
         radius = 20 # rayon des coins arrondis
         padding = 10 # espace de rembourrage entre le texte et le bord du rectangle
         if self.etat != True: 
-            couleur = '#DDA0DD'
+            couleur = '#bebfc2'
         else : 
-            couleur = '#00FFFF'
+            couleur = '#F2F3F5'
         if len(self.affichage) > 2:
             self.affichage = []
-        self.affichage.append(it.graphe.create_rounded_rectangle(it.canvas, *bbox, radius=radius, fill=couleur, outline="#026773", width=2, tag='graphe'))
+        self.affichage.append(it.graphe.create_rounded_rectangle(it.canvas, *bbox, radius=radius, fill=couleur, outline="#4E5058", width=2, tag='graphe'))
         self.affichage.append(it.canvas.create_text(self.x+self.largeur/2, self.y+self.hauteur/2, text=self.val, width=bbox[2]-bbox[0]-2*padding, justify=CENTER, fill="black", tag='graphe'))
 
     def ajout_lien(self, it, obj): ### rajoute le tracé du lien dans la variable qui stocke l'affichage
 
         if self.etat != True: 
-            couleur = '#DDA0DD'
+            couleur = '#4E5058'
             if obj.voisins[obj.voisins.index(self)+1].etat == False:
                 obj = obj.voisins[obj.voisins.index(self)+1]
         else : 
-            couleur = '#026773'
-        self.affichage.append(it.canvas.create_line(obj.x+obj.largeur/2, obj.y+obj.hauteur/2, self.x+self.largeur/2, self.y+self.hauteur/2, fill=couleur, tag='graphe'))
+            couleur = '#4E5058'
+        self.affichage.append(it.canvas.create_line(obj.x+obj.largeur/2, obj.y+obj.hauteur/2, self.x+self.largeur/2, self.y+self.hauteur/2, fill=couleur, tag='graphe', width=1.5))
 
     def calcul(self, it): ### permet de trouver la largeur du rectangle
         """
@@ -163,3 +163,6 @@ class noeud(bulle):
         for v in self.voisins:
             if item[0] in v.affichage:
                 return v
+            
+
+

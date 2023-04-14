@@ -15,11 +15,6 @@ if __name__ == "__main__":
     it.genere_graphe()
 
 
-
-#définition des variables
-
-
-
 it.tk.mainloop()
 
 
