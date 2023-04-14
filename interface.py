@@ -224,6 +224,7 @@ class interface:
         else:
             self.canvas.move('graphe', event.x-self.pos[0], event.y - self.pos[1])
             self.pos[0], self.pos[1] = event.x, event.y
+
             
 
             
