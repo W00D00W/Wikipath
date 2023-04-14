@@ -1,6 +1,6 @@
 #importation librairies
-import tkinter as tk
 import sqlite3
+import customtkinter
 
 #importation des autres fichiers du projet
 from  bdd import *
@@ -32,39 +32,38 @@ def signup():
     sign_up(id, mdp)
 
 # Création de la fenêtre
-root = tk.Tk()
-root.geometry("400x300")
-root.title("Connexion / Inscription")
-root.configure(bg="white")
+tk = Tk()
+tk.attributes('-fullscreen', True)
+tk.update()
 
 # Création du titre
-title_label = tk.Label(root, text="Connexion / Inscription", font=("Helvetica", 20), fg="white", bg="#3CA6A6")
+title_label = customtkinter.CTkLabel(tk, text="Espace membre")
 title_label.pack(pady=10)
 
 # Création des champs de saisie
-id_label = tk.Label(root, text="Nom d'utilisateur", font=("Helvetica", 12), fg="white", bg="#3CA6A6")
+id_label = customtkinter.CTkLabel(tk, text="Nom d'utilisateur")
 id_label.pack()
-id_entry = tk.Entry(root, font=("Helvetica", 12))
+id_entry = customtkinter.CTkEntry(tk)
 id_entry.pack(pady=5)
 
-mdp_label = tk.Label(root, text="Mot de passe", font=("Helvetica", 12), fg="white", bg="#3CA6A6")
+mdp_label = customtkinter.CTkLabel(tk, text="Mot de passe")
 mdp_label.pack()
-mdp_entry = tk.Entry(root, show="*", font=("Helvetica", 12))
+mdp_entry = customtkinter.CTkEntry(tk, show="*")
 mdp_entry.pack(pady=5)
 
 # Création d'un cadre pour les boutons
-button_frame = tk.Frame(root, bg="white")
+button_frame = customtkinter.CTkFrame(tk)
 button_frame.pack()
 
 # Création des boutons de connexion / inscription
-login_button = tk.Button(button_frame, text="Se connecter", font=("Helvetica", 12), bg="#3CA6A6", fg="white", command=login)
+login_button = customtkinter.CTkButton(button_frame, text="Se connecter", command=login)
 login_button.pack(side="left", padx=10, pady=20)
 
-signup_button = tk.Button(button_frame, text="S'inscrire", font=("Helvetica", 12), bg="#3CA6A6", fg="white", command=signup)
+signup_button = customtkinter.CTkButton(button_frame, text="S'inscrire", command=signup)
 signup_button.pack(side="left", padx=10, pady=20)
 
 # Lancement de la boucle principale
-root.mainloop()
+tk.mainloop()
 
 # requete="""
 # SELECT * 
