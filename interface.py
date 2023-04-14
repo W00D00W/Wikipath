@@ -204,7 +204,8 @@ class interface:
         bouge l'ensemble ou un item en fonction de la souris
         """
         if self.item is not None:
-            x, y = event.x-item.largeur/2, event.y-self.item.hauteur/2
+            print(self.item)
+            x, y = event.x-self.item.largeur/2, event.y-self.item.hauteur/2
             bbox = self.graphe.arrondi(x, y, x+self.item.largeur, y+self.item.hauteur, 20)
             self.canvas.coords(self.item.affichage[0], *bbox)
             self.canvas.coords(self.item.affichage[1], x+self.item.largeur/2, y+self.item.hauteur/2)
@@ -225,17 +226,11 @@ class interface:
             self.canvas.move('graphe', event.x-self.pos[0], event.y - self.pos[1])
             self.pos[0], self.pos[1] = event.x, event.y
 
-            
-
-            
-        
-
     def item_remove(self, event):
         """
         réinitialise la variable item lorsque le clic de souris est relaché
         """
-        global item
-        item =  None    
+        self.item =  None    
         self.page.page_courante.actualisation(self)
         for element in self.page.page_courante.voisins:
             element.actualisation(self)
