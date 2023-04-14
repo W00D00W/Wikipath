@@ -19,7 +19,6 @@ class interface:
                 self.recherche_page_ok.grid(row=0, column=2)
                 regeneration_page()
                 
-
     def __init__(self):
         self.arbre = None
         self.tk = customtkinter.CTk()
@@ -243,6 +242,7 @@ class noeud(bulle):
     def __init__(self, val, voisins, pos=(0,0)):
         super().__init__(val, pos)
         self.voisins = voisins
+        self.etat = True
 
     def affichage_noeud(self):
         """
@@ -251,15 +251,15 @@ class noeud(bulle):
         ne renvoie rien
         """
         super().affichage_noeud()
-        
-        [v.affichage_noeud() for v in self.voisins] ## affiche tout les voisins
-        [v.ajout_lien(self) for v in self.voisins] ## affiche tout les liens
+        if self.etat == True:
+            [v.affichage_noeud() for v in self.voisins] ## affiche tout les voisins
+            [v.ajout_lien(self) for v in self.voisins] ## affiche tout les liens
 
-        for i in range(2):
-            it.canvas.tag_raise(self.affichage[i])
-        for v in self.voisins:
             for i in range(2):
-                it.canvas.tag_raise(v.affichage[i])
+                it.canvas.tag_raise(self.affichage[i])
+            for v in self.voisins:
+                for i in range(2):
+                    it.canvas.tag_raise(v.affichage[i])
     
     def trouve_item(self, item):
         """
@@ -277,7 +277,8 @@ class pile:
         self.pile = []
     
     def ajout_pile(self, x):
-        self.pile.append(bulle(x.val, (x.x, x.y)))
+        self.pile.append(page_courante)
+        self.pile[-1].etat = False
     
     def retirer_pile(self):
         return self.pile.pop(-1)
