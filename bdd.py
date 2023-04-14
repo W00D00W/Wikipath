@@ -1,7 +1,11 @@
+#importation librairies
 import sqlite3
+
+
 
 bdd = sqlite3.connect("bdd_user.db")
 curseur = bdd.cursor()
+
 
 
 requete = """

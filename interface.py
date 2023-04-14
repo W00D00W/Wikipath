@@ -1,6 +1,8 @@
+#importation librairies
 import webbrowser
 import customtkinter
 
+#importation des autres fichiers du projet
 from noeud import *
 from page import *
 

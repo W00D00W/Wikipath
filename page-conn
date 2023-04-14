@@ -1,5 +1,7 @@
+#importation librairies
 from tkinter import *
 
+#importation des autres fichiers du projet
 from page import *
 
 

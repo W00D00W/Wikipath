@@ -1,7 +1,9 @@
+#importation librairies
 import wikipediaapi
 import random
 import math 
 
+#importation des autres fichiers du projet
 from noeud import *
 from pile import *
 
