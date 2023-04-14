@@ -19,16 +19,12 @@ curseur = bdd.cursor()
 def login():
     id = id_entry.get()
     mdp = mdp_entry.get()
-    print(f"id: {id}")
-    print(f"mdp: {mdp}")
     print(verif(id, mdp))
 
 # Fonction pour s'inscrire
 def signup():
     id = id_entry.get()
     mdp = mdp_entry.get()
-    print(f"New id: {id}")
-    print(f"New mdp: {mdp}")
     sign_up(id, mdp)
 
 # Création de la fenêtre

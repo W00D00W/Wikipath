@@ -22,7 +22,8 @@ class interface:
             self.recherche_page_entry.grid(row=0, column=1)
             self.recherche_page_ok.grid(row=0, column=2)
             self.page.regeneration_page(self, self.profondeur)
-            
+
+
                 
     def __init__(self):
         self.page = page()
@@ -123,9 +124,12 @@ class interface:
 
         self.canvas.create_window((largeur/4)*3-100, hauteur-200, window=self.nb_n)
 
+
+
     def change_compteur(self, x):
         self.profondeur += x
         self.compteur.configure(text=self.profondeur)
+
 
 
     def affichage_page(self, page):
@@ -152,6 +156,8 @@ class interface:
         self.texte[1].configure(state='disabled')
         self.texte[2].configure(command= lambda : webbrowser.open_new(page.fullurl))
 
+
+
     def predefini(self):
         self.canvas.delete('graphe')
         self.page.page_courante = noeud('Wikipedia', [bulle('Catégorie:Littérature'), bulle('Catégorie:histoire'), bulle('Catégorie:musique'), bulle('Catégorie:mode'), 
@@ -160,8 +166,11 @@ class interface:
                             bulle('Catégorie:Informatique'), bulle('Catégorie:nature'), bulle('Catégorie:sport')])
         self.graphe.graphe(self, self.page.page_courante)
 
+
+
     def genere_graphe(self):
         self.arbre = self.graphe.graphe(self, self.page.page_courante)
+
 
     ### actions
     def actu_pos(self, event):
@@ -175,6 +184,8 @@ class interface:
             if self.item != None:
                 if self.item.contient(event.x, event.y) != True:
                     self.item = None
+
+
 
     def clic(self, event):
         """
@@ -198,6 +209,8 @@ class interface:
                     self.page.page_courante = self.page.recuperation_page(v.val)
                     self.graphe.graphe(self, self.page.page_courante)
                 break
+
+
 
     def item_bouge(self, event):
         """
@@ -225,6 +238,8 @@ class interface:
         else:
             self.canvas.move('graphe', event.x-self.pos[0], event.y - self.pos[1])
             self.pos[0], self.pos[1] = event.x, event.y
+
+
 
     def item_remove(self, event):
         """

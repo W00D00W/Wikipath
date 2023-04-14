@@ -14,6 +14,8 @@ class bulle:
         self.etat = True
         self.passage = 0
 
+
+
     def affichage_noeud(self, it, page): ### permet l'affichage du noeud
         """
         ne prend rien en parametre 
@@ -44,6 +46,8 @@ class bulle:
         self.affichage.append(it.graphe.create_rounded_rectangle(it.canvas, *bbox, radius=radius, fill=couleur, outline="#4E5058", width=2, tag='graphe'))
         self.affichage.append(it.canvas.create_text(self.x+self.largeur/2, self.y+self.hauteur/2, text=self.val, width=bbox[2]-bbox[0]-2*padding, justify=CENTER, fill="black", tag='graphe'))
 
+
+
     def ajout_lien(self, it, obj): ### rajoute le tracé du lien dans la variable qui stocke l'affichage
 
         if self.etat != True: 
@@ -53,6 +57,8 @@ class bulle:
         else : 
             couleur = '#4E5058'
         self.affichage.append(it.canvas.create_line(obj.x+obj.largeur/2, obj.y+obj.hauteur/2, self.x+self.largeur/2, self.y+self.hauteur/2, fill=couleur, tag='graphe', width=1.5))
+
+
 
     def calcul(self, it): ### permet de trouver la largeur du rectangle
         """
@@ -70,6 +76,7 @@ class bulle:
         self.largeur = bbox[2] - bbox[0]
         self.hauteur = bbox[3] - bbox[1]
 
+
     ### actualise le x et le y en fonction du x et y du canvas
     def actualisation(self, it): 
         """
@@ -77,6 +84,7 @@ class bulle:
         """
         self.x = it.canvas.coords(self.affichage[1])[0]-self.largeur/2
         self.y = it.canvas.coords(self.affichage[1])[1]-self.hauteur/2
+
 
     ### verifie si l'objet est affiché par dessus un autre, si oui le déplace
     def collision(self, obj):  
@@ -116,6 +124,7 @@ class bulle:
         return dep
     
     
+
     def contient(self, x, y):
         """
         x, y : floats; renvoie une True si la position x y est comprise dans la hitbox de l'objet, False sinon
@@ -124,10 +133,14 @@ class bulle:
             return True
         return False
     
+
+
 class noeud(bulle):
     def __init__(self, val, voisins, pos=(0,0)):
         super().__init__(val, pos)
         self.voisins = voisins
+
+
 
     def affichage_noeud(self, it, obj):
         """
@@ -150,11 +163,15 @@ class noeud(bulle):
                 for i in range(2):
                     it.canvas.tag_raise(v.affichage[i])
 
+
+
     def ajout_voisin(self, voisin):
         if voisin not in self.voisins:
             print(voisin, self.voisins[:3])
             self.voisins.insert(0, voisin)
     
+
+
     def trouve_item(self, item):
         """
         item : int ou un objet du canva
