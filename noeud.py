@@ -49,20 +49,18 @@ class bulle:
 
 
     def ajout_lien(self, it, obj): ### rajoute le tracé du lien dans la variable qui stocke l'affichage
-
+        
+        couleur = '#4E5058'
         if self.etat != True: 
-            couleur = '#4E5058'
             if obj.voisins[obj.voisins.index(self)+1].etat == False:
                 obj = obj.voisins[obj.voisins.index(self)+1]
-        else : 
-            couleur = '#4E5058'
         self.affichage.append(it.canvas.create_line(obj.x+obj.largeur/2, obj.y+obj.hauteur/2, self.x+self.largeur/2, self.y+self.hauteur/2, fill=couleur, tag='graphe', width=1.5))
 
 
 
     def calcul(self, it): ### permet de trouver la largeur du rectangle
         """
-        calcul la largeur du rectangle et attribue a x, y, largeur et hauteur les valeurs correspondantes
+        calcul la largeur du rectangle et attribue aux variables x, y, largeur et hauteur les valeurs correspondantes
         ne renvoie rien
         """
         padding = 10 # espace de rembourrage entre le texte et le bord du rectangle
@@ -136,6 +134,9 @@ class bulle:
 
 
 class noeud(bulle):
+
+
+    
     def __init__(self, val, voisins, pos=(0,0)):
         super().__init__(val, pos)
         self.voisins = voisins

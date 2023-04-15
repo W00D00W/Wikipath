@@ -1,7 +1,7 @@
 #importation librairies
 import wikipediaapi
 import random
-import math 
+import math
 
 #importation des autres fichiers du projet
 from noeud import *
@@ -117,7 +117,7 @@ class graphe:
         obj : un noeud contenant une page wikipedia ainsi que ses voisins
         """
 
-        position = [500,480]
+        position = [450,380]
         obj.x, obj.y = position[0], position[1]
         lst_angle = [el*(360 / len(obj.voisins)) for el in range(len(obj.voisins))]
 

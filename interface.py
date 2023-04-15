@@ -8,7 +8,11 @@ from page import *
 
 
 
+
 class interface:
+
+
+
     def affichage_bouton(self, values):
         self.graphe.pile.vider_pile()
         self.profondeur = 48
@@ -160,10 +164,10 @@ class interface:
 
     def predefini(self):
         self.canvas.delete('graphe')
-        self.page.page_courante = noeud('Wikipedia', [bulle('Catégorie:Littérature'), bulle('Catégorie:histoire'), bulle('Catégorie:musique'), bulle('Catégorie:mode'), 
-                            bulle('Catégorie:art'), bulle('Catégorie:culture'), bulle('Catégorie:géographie'), bulle('Catégorie:géopolitique'), 
-                            bulle('Catégorie:politique'), bulle('Catégorie:culture pop'), bulle('Catégorie:philosophie'), bulle('Catégorie:mathématiques'),
-                            bulle('Catégorie:Informatique'), bulle('Catégorie:nature'), bulle('Catégorie:sport')])
+        self.page.page_courante = noeud('Wikipedia', [bulle('Catégorie: Littérature'), bulle('Catégorie: histoire'), bulle('Catégorie: musique'), bulle('Catégorie: mode'), 
+                            bulle('Catégorie: art'), bulle('Catégorie: culture'), bulle('Catégorie: géographie'), bulle('Catégorie: géopolitique'), 
+                            bulle('Catégorie: politique'), bulle('Catégorie: culture pop'), bulle('Catégorie: philosophie'), bulle('Catégorie: mathématiques'),
+                            bulle('Catégorie: Informatique'), bulle('Catégorie: nature'), bulle('Catégorie: sport')])
         self.graphe.graphe(self, self.page.page_courante)
 
 
