@@ -40,93 +40,93 @@ class interface:
         self.co = 0
 
         customtkinter.set_appearance_mode("Dark")
-        self.tk.geometry(str(self.tk.winfo_screenwidth())+'dx'+str(self.tk.winfo_screenheight())+'d')
+        self.tk.geometry(str(self.tk.winfo_screenwidth())+'x'+str(self.tk.winfo_screenheight()))
         self.tk.update()
 
-        largeur = self.tk.winfo_screenwidth()
-        hauteur = self.tk.winfo_screenheight()
+        largeur = self.tk.winfo_width()
+        hauteur = self.tk.winfo_height()
 
         ### affichage canva
-        self.canvas = Canvas(self.tk,width = largeur, height = hauteur , bd=0, bg="white")
+        self.canvas = Canvas(self.tk,width = largeur, height = hauteur, bg="white")
         self.canvas.grid(row=1, column=0, columnspan=3,rowspan=3, padx=15)
 
         self.tk.grid_columnconfigure(3, weight = 1)
 
-        #### affichage menu
+        # #### affichage menu
 
-        self.barre_menu = customtkinter.CTkFrame(master = self.tk, width = largeur, height= 30)
-        self.barre_menu.grid(row=0, column=0, columnspan=4, pady=10)
+        # self.barre_menu = customtkinter.CTkFrame(master = self.tk, width = largeur, height= 30)
+        # self.barre_menu.grid(row=0, column=0, columnspan=4, pady=10)
 
-        for i in range(3):
-            self.barre_menu.columnconfigure(i, weight=1)
+        # for i in range(3):
+        #     self.barre_menu.columnconfigure(i, weight=1)
 
-        self.barre_menu.grid_propagate(False)
+        # self.barre_menu.grid_propagate(False)
 
-        ### creation des boutons propres au menu
-        self.login_button = customtkinter.CTkButton(self.barre_menu, text="Se connecter / S'inscrire")
-        self.login_button.grid(row=0, column=0, sticky='W', padx=10)
+        # ### creation des boutons propres au menu
+        # self.login_button = customtkinter.CTkButton(self.barre_menu, text="Se connecter / S'inscrire")
+        # self.login_button.grid(row=0, column=0, sticky='W', padx=10)
 
-        self.quitter_button = customtkinter.CTkButton(self.barre_menu, text="Quitter")
-        self.quitter_button.grid(row=0, column=2, sticky='E', padx=10)
+        # self.quitter_button = customtkinter.CTkButton(self.barre_menu, text="Quitter")
+        # self.quitter_button.grid(row=0, column=2, sticky='E', padx=10)
 
-        ### recherche
-        self.recherche = customtkinter.CTkFrame(self.barre_menu)
-        self.recherche.grid(row=0, column=1)
+        # ### recherche
+        # self.recherche = customtkinter.CTkFrame(self.barre_menu)
+        # self.recherche.grid(row=0, column=1)
 
-        self.valeurs = customtkinter.CTkSegmentedButton(self.recherche, values=['prédefinie', 'rechercher'], command = self.affichage_bouton)
-        self.valeurs.grid(row=0, column=0)
+        # self.valeurs = customtkinter.CTkSegmentedButton(self.recherche, values=['prédefinie', 'rechercher'], command = self.affichage_bouton)
+        # self.valeurs.grid(row=0, column=0)
 
-        self.recherche_page_entry = customtkinter.CTkEntry(self.recherche)
-        self.recherche_page_entry.grid(row=0, column=1)
+        # self.recherche_page_entry = customtkinter.CTkEntry(self.recherche)
+        # self.recherche_page_entry.grid(row=0, column=1)
 
-        self.recherche_page_ok = customtkinter.CTkButton(self.recherche, text='ok', width = 20, command= lambda : self.page.changement_page(self, self.recherche_page_entry.get()))
-        self.recherche_page_ok.grid(row=0, column=5)
+        # self.recherche_page_ok = customtkinter.CTkButton(self.recherche, text='ok', width = 20, command= lambda : self.page.changement_page(self, self.recherche_page_entry.get()))
+        # self.recherche_page_ok.grid(row=0, column=5)
 
-        self.zone_droite = customtkinter.CTkFrame(self.tk, width = (self.tk.winfo_screenwidth()/4)-50, height=self.tk.winfo_screenheight()-120)
+        # self.zone_droite = customtkinter.CTkFrame(self.tk, width = (self.tk.winfo_screenwidth()/4)-50, height=self.tk.winfo_screenheight()-120)
 
-        self.zone_droite.grid(row=1, column=3)
+        # self.zone_droite.grid(row=1, column=3)
 
-        self.zone_droite.rowconfigure(0, weight=1)
-        self.zone_droite.rowconfigure(1, weight=1)
-        self.zone_droite.rowconfigure(2, weight=1)
+        # self.zone_droite.rowconfigure(0, weight=1)
+        # self.zone_droite.rowconfigure(1, weight=1)
+        # self.zone_droite.rowconfigure(2, weight=1)
 
-        self.zone_droite.grid_propagate(False)
+        # self.zone_droite.grid_propagate(False)
 
-        self.texte = [None, None, None, None]
-        self.texte[0] = customtkinter.CTkLabel(self.zone_droite, text = '')
-        self.texte[0].grid(row=0, column=0, columnspan=1, pady=10, sticky='snew')
+        # self.texte = [None, None, None, None]
+        # self.texte[0] = customtkinter.CTkLabel(self.zone_droite, text = '')
+        # self.texte[0].grid(row=0, column=0, columnspan=1, pady=10, sticky='snew')
 
-        self.texte[1] = customtkinter.CTkTextbox(self.zone_droite, width= 330, height=600, fg_color='transparent')
-        self.texte[1].grid(row=1, column=0, columnspan=1)
+        # self.texte[1] = customtkinter.CTkTextbox(self.zone_droite, width= 330, height=600, fg_color='transparent')
+        # self.texte[1].grid(row=1, column=0, columnspan=1)
 
-        self.texte[2] = customtkinter.CTkButton(self.zone_droite, text = 'Aller a la page', command=lambda : webbrowser.open_new(''))
-        self.texte[2].grid(row=2, column=0, columnspan=1, pady=10, sticky='S')
+        # self.texte[2] = customtkinter.CTkButton(self.zone_droite, text = 'Aller a la page', command=lambda : webbrowser.open_new(''))
+        # self.texte[2].grid(row=2, column=0, columnspan=1, pady=10, sticky='S')
 
-        self.texte[3] = customtkinter.CTkButton(self.zone_droite, text='recharger les liens', command = lambda : self.page.regeneration_page(self, self.profondeur))
-        self.texte[3].grid(row=3, column=0, columnspan=1, pady=10)
+        # self.texte[3] = customtkinter.CTkButton(self.zone_droite, text='recharger les liens', command = lambda : self.page.regeneration_page(self, self.profondeur))
+        # self.texte[3].grid(row=3, column=0, columnspan=1, pady=10)
         
-        ### bind action
-        self.canvas.bind('<Button-1>', self.actu_pos)
-        self.canvas.bind('<Double-Button-1>', self.clic)
-        self.canvas.bind('<B1-Motion>', self.item_bouge)
-        self.canvas.bind('<ButtonRelease-1>', self.item_remove)
+        # ### bind action
+        # self.canvas.bind('<Button-1>', self.actu_pos)
+        # self.canvas.bind('<Double-Button-1>', self.clic)
+        # self.canvas.bind('<B1-Motion>', self.item_bouge)
+        # self.canvas.bind('<ButtonRelease-1>', self.item_remove)
 
-        ### bouton
-        self.nb_n = customtkinter.CTkFrame(self.canvas, 100, 30)
+        # ### bouton
+        # self.nb_n = customtkinter.CTkFrame(self.canvas, 100, 30)
 
-        self.bouton_plus = customtkinter.CTkButton(self.nb_n, 20, 15, text='+', command=lambda : self.change_compteur(+1))
-        self.bouton_plus.grid(row=0, column=1)
+        # self.bouton_plus = customtkinter.CTkButton(self.nb_n, 20, 15, text='+', command=lambda : self.change_compteur(+1))
+        # self.bouton_plus.grid(row=0, column=1)
 
-        self.bouton_moins = customtkinter.CTkButton(self.nb_n, 20, 15, text='-', command=lambda : self.change_compteur(-1))
-        self.bouton_moins.grid(row=1, column=1)
+        # self.bouton_moins = customtkinter.CTkButton(self.nb_n, 20, 15, text='-', command=lambda : self.change_compteur(-1))
+        # self.bouton_moins.grid(row=1, column=1)
 
-        self.bouton_valide = customtkinter.CTkButton(self.nb_n, 20, 30, text='ok', command=lambda : self.page.regeneration_page(self,self.profondeur))
-        self.bouton_valide.grid(row=0, column=2, rowspan = 2)
+        # self.bouton_valide = customtkinter.CTkButton(self.nb_n, 20, 30, text='ok', command=lambda : self.page.regeneration_page(self,self.profondeur))
+        # self.bouton_valide.grid(row=0, column=2, rowspan = 2)
 
-        self.compteur = customtkinter.CTkLabel(self.nb_n, 40, 30, text=self.profondeur)
-        self.compteur.grid(row=0, column=0, rowspan=2)
+        # self.compteur = customtkinter.CTkLabel(self.nb_n, 40, 30, text=self.profondeur)
+        # self.compteur.grid(row=0, column=0, rowspan=2)
 
-        self.canvas.create_window((largeur/4)*3-100, hauteur-200, window=self.nb_n)
+        # self.canvas.create_window((largeur/4)*3-100, hauteur-200, window=self.nb_n)
 
 
 
