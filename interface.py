@@ -7,7 +7,7 @@ from noeud import *
 from page import *
 from pageconn import *
 from signup import *
-
+from image import *
 
 class interface:
     def efface(self):
@@ -66,7 +66,6 @@ class interface:
             self.barre_menu.configure(width=self.largeur, height=30)
             self.tk.update()
         
-
                 
     def __init__(self):
         self.page = page()
@@ -112,14 +111,17 @@ class interface:
         self.texte[0] = customtkinter.CTkLabel(self.zone_droite, text = '', text_color='black')
         self.texte[0].grid(row=0, column=0, columnspan=1, pady=10, sticky='snew')
 
-        self.texte[1] = customtkinter.CTkTextbox(self.zone_droite, fg_color='transparent', text_color='black')
+        self.texte[1] = customtkinter.CTkButton(self.zone_droite, fg_color='transparent', image=recuperation_image(self.page.page_courante.url))
         self.texte[1].grid(row=1, column=0, columnspan=1)
 
-        self.texte[2] = customtkinter.CTkButton(self.zone_droite, text = 'Aller a la page', command=lambda : webbrowser.open_new(''))
-        self.texte[2].grid(row=2, column=0, columnspan=1, pady=10, sticky='S')
+        self.texte[2] = customtkinter.CTkTextbox(self.zone_droite, fg_color='transparent', text_color='black')
+        self.texte[2].grid(row=1, column=0, columnspan=1)
 
-        self.texte[3] = customtkinter.CTkButton(self.zone_droite, text='recharger les liens', command = lambda : self.page.regeneration_page(self, self.profondeur))
-        self.texte[3].grid(row=3, column=0, columnspan=1, pady=10)
+        self.texte[3] = customtkinter.CTkButton(self.zone_droite, text = 'Aller a la page', command=lambda : webbrowser.open_new(''))
+        self.texte[3].grid(row=2, column=0, columnspan=1, pady=10, sticky='S')
+
+        self.texte[4] = customtkinter.CTkButton(self.zone_droite, text='recharger les liens', command = lambda : self.page.regeneration_page(self, self.profondeur))
+        self.texte[4].grid(row=3, column=0, columnspan=1, pady=10)
         
         
 
@@ -215,11 +217,11 @@ class interface:
                 titre_modif += '\n'
         
         self.texte[0].configure(text= titre_modif)
-        self.texte[1].configure(state='normal')
-        self.texte[1].delete(0.0, END)
-        self.texte[1].insert("0.0", sum)
-        self.texte[1].configure(state='disabled')
-        self.texte[2].configure(command= lambda : webbrowser.open_new(page.fullurl))
+        self.texte[2].configure(state='normal')
+        self.texte[2].delete(0.0, END)
+        self.texte[2].insert("0.0", sum)
+        self.texte[2].configure(state='disabled')
+        self.texte[3].configure(command= lambda : webbrowser.open_new(page.fullurl))
 
     def predefini(self):
         self.canvas.delete('graphe')
