@@ -9,8 +9,6 @@ from pageconn import *
 from signup import *
 
 
-
-
 class interface:
     def efface(self):
         self.liste = self.tk.winfo_children()
@@ -32,10 +30,9 @@ class interface:
             self.page.regeneration_page(self, self.profondeur)
 
     def definition_taille(self):
+        if self.largeur != self.tk.winfo_width() or self.hauteur != self.tk.winfo_height():
+            if self.page_actuelle == 0:
 
-        if self.page_actuelle == 0:
-
-            if self.largeur != self.tk.winfo_width() or self.hauteur != self.tk.winfo_height():
                 self.largeur = self.tk.winfo_width()
                 self.hauteur = self.tk.winfo_height()
 
@@ -64,6 +61,12 @@ class interface:
 
                 self.nb_n.place_configure(width=110, height=50)
                 self.nb_n.place(x=10, y=10)
+
+        elif self.page_actuelle == 1 or self.page_actuelle == 2:
+            self.barre_menu.configure(width=self.largeur, height=30)
+            self.tk.update()
+        
+
                 
     def __init__(self):
         self.page = page()
@@ -91,35 +94,7 @@ class interface:
         self.canvas.grid(row=1, column=0)
         self.canvas.grid_propagate(False)
 
-        #### affichage menu
-
-        self.barre_menu = customtkinter.CTkFrame(master = self.tk)
-        self.barre_menu.grid(row=0, column=0, columnspan=4)
-
-        for i in range(3):
-            self.barre_menu.columnconfigure(i, weight=1)
-
-        self.barre_menu.grid_propagate(False)
-
-        ### creation des boutons propres au menu
-        self.login_button = customtkinter.CTkButton(self.barre_menu, text="Se connecter / S'inscrire", command=lambda : conn(self))
-        self.login_button.grid(row=0, column=0, sticky='W', padx=10)
-
-        self.quitter_button = customtkinter.CTkButton(self.barre_menu, text="Quitter")
-        self.quitter_button.grid(row=0, column=2, sticky='E', padx=10)
-
-        ### recherche
-        self.recherche = customtkinter.CTkFrame(self.barre_menu)
-        self.recherche.grid(row=0, column=1)
-
-        self.valeurs = customtkinter.CTkSegmentedButton(self.recherche, values=['prédefinie', 'rechercher'], command = self.affichage_bouton)
-        self.valeurs.grid(row=0, column=0)
-
-        self.recherche_page_entry = customtkinter.CTkEntry(self.recherche)
-        self.recherche_page_entry.grid(row=0, column=1)
-
-        self.recherche_page_ok = customtkinter.CTkButton(self.recherche, text='ok', width = 20, command= lambda : self.page.changement_page(self, self.recherche_page_entry.get()))
-        self.recherche_page_ok.grid(row=0, column=5)
+        self.menu()
 
         ### zone droite
         self.zone_droite = Frame(self.tk, bg='#bebfc2')
@@ -171,6 +146,38 @@ class interface:
         self.compteur.grid(row=0, column=0, rowspan=2)
 
         self.definition_taille()
+
+    def menu(self):
+        self.barre_menu = customtkinter.CTkFrame(master = self.tk)
+        self.barre_menu.grid(row=0, column=0, columnspan=4)
+
+        for i in range(3):
+            self.barre_menu.columnconfigure(i, weight=1)
+
+        self.barre_menu.grid_propagate(False)
+
+        ### creation des boutons propres au menu
+        if self.page_conn != None:
+            text = self.page_conn.user
+        text = "Se connecter / S'inscrire"
+        self.login_button = customtkinter.CTkButton(self.barre_menu, text=text, command=lambda : conn(self))
+        self.login_button.grid(row=0, column=0, sticky='W', padx=10)
+
+        self.quitter_button = customtkinter.CTkButton(self.barre_menu, text="Quitter")
+        self.quitter_button.grid(row=0, column=2, sticky='E', padx=10)
+
+        ### recherche
+        self.recherche = customtkinter.CTkFrame(self.barre_menu)
+        self.recherche.grid(row=0, column=1)
+
+        self.valeurs = customtkinter.CTkSegmentedButton(self.recherche, values=['prédefinie', 'rechercher'], command = self.affichage_bouton)
+        self.valeurs.grid(row=0, column=0)
+
+        self.recherche_page_entry = customtkinter.CTkEntry(self.recherche)
+        self.recherche_page_entry.grid(row=0, column=1)
+
+        self.recherche_page_ok = customtkinter.CTkButton(self.recherche, text='ok', width = 20, command= lambda : self.page.changement_page(self, self.recherche_page_entry.get()))
+        self.recherche_page_ok.grid(row=0, column=5)
 
     def change_compteur(self, x):
         self.profondeur += x
@@ -296,7 +303,6 @@ class interface:
         else:
             self.canvas.move('graphe', event.x-self.pos[0], event.y - self.pos[1])
             self.pos[0], self.pos[1] = event.x, event.y
-
 
 
     def item_remove(self, event):
