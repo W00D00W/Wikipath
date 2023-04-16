@@ -8,28 +8,36 @@ from bs4 import BeautifulSoup
 def recuperation_image(url):
     reponse = requests.get(url)
     soup = BeautifulSoup(reponse.text, "html.parser")
+    test = True
     try : 
         obj = soup.find('table')
         soup = obj.findAll('img')
     except:
-        return None
+        test = False
+    if test == False:
+        try:
+            obj = soup.find('div', class_='thumbinner')
+            soup = obj.findAll('img')
+        except:
+            return None
 
-    try : 
-        if len(soup) > 0:
-            max = soup[0]
-            for el in soup:
+
+    if len(soup) > 0:
+        max = None
+        for el in soup:
+            if str(el).count('data-file-width'):
+                if max == None:
+                    max = el
                 if int(el['data-file-width']) > int(max['data-file-width']):
                     max = el
-            soup = max
-
+        soup = max
+        if soup != None:
             if int(soup['data-file-width']) > 50:
 
                 response = requests.get("https:"+str(soup['src']))
 
-
                 return ImageTk.PhotoImage(Image.open(BytesIO(response.content)))
-    except:
-        return None
+
 
 
 
