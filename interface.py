@@ -219,6 +219,10 @@ class interface:
             self.texte[1].grid(row=1, column=0, columnspan=1)
             self.texte[1].update()
             self.texte[1].delete('all')
+            
+            wpercent = (basewidth/float(img.size[0]))
+
+
             redimension = self.image_wiki.resize((self.texte[1].winfo_width(), self.texte[1].winfo_height()), Image.Resampling.LANCZOS)
             self.image_wiki = ImageTk.PhotoImage(redimension)
             self.img = self.texte[1].create_image(self.texte[1].winfo_width()/2, self.texte[1].winfo_height()/2, image=self.image_wiki)
