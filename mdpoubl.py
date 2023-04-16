@@ -3,10 +3,9 @@ import sqlite3
 import customtkinter
 
 #importation des autres fichiers du projet
-from  bdd import *
+from  Bdd import *
 from page import *
 from pageconn import *
-from bdd import *
 
 
 class oubl:
@@ -42,6 +41,6 @@ class oubl:
         self.button_frame.grid(row=8, column=0, columnspan=4)
 
         # Création des boutons de connexion / inscription / mdp oublié
-        self.confirmer = customtkinter.CTkButton(self.button_frame, text="Confirmer", command=lambda : mdpoublie(id, self.mdp_entry.get(), self.mdp_entry2.get();*, obj))
+        self.confirmer = customtkinter.CTkButton(self.button_frame, text="Confirmer", command=lambda : mdpoublie(id, self.mdp_entry.get(), self.mdp_entry2.get(), obj))
         self.confirmer.pack(side="left", padx=10, pady=20)
     
