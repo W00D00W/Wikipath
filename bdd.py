@@ -2,6 +2,9 @@
 import sqlite3
 import tkinter as tk
 from tkinter import messagebox
+from mdpoubl import oubl
+from signup import *
+
 
 
 bdd = sqlite3.connect("bdd_user.db")
@@ -49,14 +52,49 @@ def sign_up(id, mdp):
         curseur.execute(requete)
 
 
-#Fonction mdp oublié
-def mdp_oublie(id, nouv_mdp):
+def avant_mdp_oublie(id, obj):
+
+    autorisation = True
+    
     requete = """
-    UPDATE user
-    SET mdp = ?
+    SELECT *
+    FROM user
     WHERE id = ?;
     """
-    curseur.execute(requete, (nouv_mdp, id))
+    curseur.execute(requete, (id,))
+    a = curseur.fetchall()
+    print(a)
+
+    if len(id) < 4:
+        erreur("Rentrez un identifiant avec au moins 4 carractères.")
+        autorisation = False
+    elif a == []:
+        erreur("Il n'y a pas de compte avec cet identifiant sur cette appli.")
+        autorisation = False
+
+    if autorisation:
+        obj.oublie = oubl(id, obj)
+    
+
+#Fonction mdp oublié
+def mdpoublie(id, nouv_mdp, conf_mdp, obj):
+
+    autorise = True
+
+
+    if nouv_mdp != conf_mdp:
+        erreur("Les deux mots de passes sont différents")
+        autorise = False
+
+    if autorise:
+
+        requete = """
+        UPDATE user
+        SET mdp = ?
+        WHERE id = ?;
+        """
+        curseur.execute(requete, (nouv_mdp, id))
+        obj.sign = conn(obj)
 
 
 
