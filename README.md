@@ -1,4 +1,5 @@
 # Wikipath
+
 Une appli qui vous permet d'utiliser au maximum la puissance de [Wikipédia](https://fr.wikipedia.org/wiki/Wikip%C3%A9dia:Accueil_principal) !
 
 ## Caractéristiques
@@ -13,3 +14,15 @@ Une appli qui vous permet d'utiliser au maximum la puissance de [Wikipédia](htt
   - La page "Wikipédia", et toutes ses voisines, qui se présente directement devant vous au lancement
   - Cliquer sur "Prédéfini" pour avoir notre sélection personnelle de Catégories
   - Cliquer sur "Rechercher" et entrer le nom d'un page, puis cliquer sur "ok"
+ 
+ ### Interface Utilisateur
+
+- Options de rendu dans la console (Unix et Windows)
+- Interface graphique Customtkinter
+- Design de l'interface sobre et minimaliste pour privilégier la lisibilité et la rendre la plus intuitive possible
+ 
+## Installation
+
+.exe ?
+
+## Utilisation
