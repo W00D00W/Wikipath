@@ -11,16 +11,17 @@ def recuperation_image(url):
     obj = soup.find('table')
     soup = obj.findAll('img')
 
-    max = soup[0]
-    for el in soup:
-        if int(el['data-file-width']) > int(max['data-file-width']):
-            max = el
-    soup = max
+    if len(soup) > 0:
+        max = soup[0]
+        for el in soup:
+            if int(el['data-file-width']) > int(max['data-file-width']):
+                max = el
+        soup = max
 
-    response = requests.get("https:"+str(soup['src']))
+        response = requests.get("https:"+str(soup['src']))
 
 
-    return ImageTk.PhotoImage(Image.open(BytesIO(response.content)))
+        return ImageTk.PhotoImage(Image.open(BytesIO(response.content)))
 
 
 

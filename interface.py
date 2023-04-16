@@ -221,8 +221,11 @@ class interface:
                 titre_modif += '\n'
         
         self.texte[0].configure(text= titre_modif)
-        # img= recuperation_image(page.fullurl)
-        # self.texte[1].configure(image=img)
+        img= recuperation_image(page.fullurl)
+        if img != None:
+            self.texte[1].delete('all')
+            self.texte[1].create_image(self.texte[1].winfo_width()/2, self.texte[1].winfo_height()/2, image=img)
+            print('img crée')
         self.texte[2].configure(state='normal')
         self.texte[2].delete(0.0, END)
         self.texte[2].insert("0.0", sum)
