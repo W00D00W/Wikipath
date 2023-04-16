@@ -36,7 +36,7 @@ def recuperation_image(url):
 
                 response = requests.get("https:"+str(soup['src']))
 
-                return ImageTk.PhotoImage(Image.open(BytesIO(response.content)))
+                return Image.open(BytesIO(response.content))
 
 
 

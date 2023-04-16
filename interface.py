@@ -5,9 +5,9 @@ import customtkinter
 #importation des autres fichiers du projet
 from noeud import *
 from page import *
-from pageconn import *
-from signup import *
 from image import *
+from bddd import *
+
 
 class interface:
     def efface(self):
@@ -59,18 +59,12 @@ class interface:
                 self.texte[2].configure(width=largeur_frame-largeur_frame/4, height= hauteur_canvas/2)
                 self.tk.update()
 
-
-
-
                 self.nb_n.place_configure(width=110, height=50)
                 self.nb_n.place(x=10, y=10)
 
-
-
         elif self.page_actuelle == 1 or self.page_actuelle == 2:
             self.barre_menu.configure(width=self.largeur, height=30)
-            self.tk.update()
-        
+            self.tk.update()     
                 
     def __init__(self):
         self.page = page()
@@ -127,8 +121,6 @@ class interface:
 
         self.texte[4] = customtkinter.CTkButton(self.zone_droite, text='recharger les liens', command = lambda : self.page.regeneration_page(self, self.profondeur))
         self.texte[4].grid(row=4, column=0, columnspan=1, pady=10)
-        
-        
 
         ### assignations
         self.canvas.bind('<Button-1>', self.actu_pos)
@@ -222,12 +214,15 @@ class interface:
                 titre_modif += '\n'
         
         self.texte[0].configure(text= titre_modif)
-        self.image_wiki = img= recuperation_image(page.fullurl)
-        if img != None:
+        self.image_wiki = recuperation_image(page.fullurl)
+        if self.image_wiki != None:
             self.texte[1].grid(row=1, column=0, columnspan=1)
             self.texte[1].update()
             self.texte[1].delete('all')
+            redimension = self.image_wiki.resize((self.texte[1].winfo_width(), self.texte[1].winfo_height()), Image.Resampling.LANCZOS)
+            self.image_wiki = ImageTk.PhotoImage(redimension)
             self.img = self.texte[1].create_image(self.texte[1].winfo_width()/2, self.texte[1].winfo_height()/2, image=self.image_wiki)
+            self.tk.update()
         else:
             self.texte[1].grid_forget()
         self.texte[2].configure(state='normal')
@@ -247,9 +242,7 @@ class interface:
     def genere_graphe(self):
         self.arbre = self.graphe.graphe(self, self.page.page_courante)
 
-
     ### actions
-
     def actu_fenetre(self, event):
         self.definition_taille()
 
@@ -264,8 +257,6 @@ class interface:
             if self.item != None:
                 if self.item.contient(event.x, event.y) != True:
                     self.item = None
-
-
 
     def clic(self, event):
         """
@@ -289,8 +280,6 @@ class interface:
                     self.page.page_courante = self.page.recuperation_page(v.val)
                     self.graphe.graphe(self, self.page.page_courante)
                 break
-
-
 
     def item_bouge(self, event):
         """
@@ -328,3 +317,70 @@ class interface:
         self.page.page_courante.actualisation(self)
         for element in self.page.page_courante.voisins:
             element.actualisation(self)
+
+
+### page connexion
+class page_conn:
+    def __init__(self, obj, user):
+        self.tk = obj.tk
+        self.user = user
+        obj.efface()
+        obj.page_actuelle = 2
+
+        obj.menu()
+        obj.definition_taille()
+
+        self.title_label = customtkinter.CTkLabel(self.tk, text="Espace membre : bienvenue "+user)
+        self.title_label.grid(row=1, column=0, padx=30, pady=15)
+
+        text = "Vous n'avez aucune page en favori"
+        if len(chercher_captures(self.user)) > 0:
+            text = "Pages en favori"
+        self.recherche_page = customtkinter.CTkLabel(self.tk, text=text)
+        self.recherche_page.grid(row=2, column=0, padx=0, pady=50)
+
+        if len(chercher_captures(self.user)) > 0:
+            scrollable_frame = customtkinter.CTkScrollableFrame(self.tk, label_text="CTkScrollableFrame")
+            scrollable_frame.grid(row=2, column=0, padx=(20, 0), pady=(20, 0), sticky="nsew")
+            scrollable_frame_switches = []
+            cpt = 2
+            for element in chercher_captures(self.user):
+                switch = customtkinter.CTkButton(master=scrollable_frame, text=element)
+                switch.grid(row=cpt, column=0, padx=10, pady=(0, 20))
+                scrollable_frame_switches.append(switch)
+                cpt += 1
+
+class conn:
+    def __init__(self, obj):
+        self.tk = obj.tk
+        obj.efface()
+        obj.page_actuelle = 1
+        obj.menu()
+        obj.definition_taille()
+
+        # Création du titre
+        self.title_label = customtkinter.CTkLabel(self.tk, text="Espace membre")
+        self.title_label.grid(row=1, column=0, pady=10, columnspan=4)
+
+        # Création des champs de saisie
+        self.id_label = customtkinter.CTkLabel(self.tk, text="Nom d'utilisateur")
+        self.id_label.grid(row=2, column=0, columnspan=4)
+        self.id_entry = customtkinter.CTkEntry(self.tk)
+        self.id_entry.grid(row=3, column=0, pady=5, columnspan=4)
+
+        self.mdp_label = customtkinter.CTkLabel(self.tk, text="Mot de passe")
+        self.mdp_label.grid(row=4, column=0, columnspan=4)
+        self.mdp_entry = customtkinter.CTkEntry(self.tk, show="*")
+        self.mdp_entry.grid(row=5, column=0, pady=5, columnspan=4)
+
+        # Création d'un cadre pour les boutons
+        self.button_frame = customtkinter.CTkFrame(self.tk)
+        self.button_frame.grid(row=6, column=0, columnspan=4)
+
+        # Création des boutons de connexion / inscription / mdp oublié
+        self.login_button = customtkinter.CTkButton(self.button_frame, text="Se connecter", command=lambda : verif(self.id_entry.get(), self.mdp_entry.get()))
+        self.login_button.pack(side="left", padx=10, pady=20)
+        self.signup_button = customtkinter.CTkButton(self.button_frame, text="S'inscrire", command=lambda : sign_up(self.id_entry.get(), self.mdp_entry.get()))
+        self.signup_button.pack(side="left", padx=10, pady=20)
+        self.oublie_button = customtkinter.CTkButton(self.button_frame, text="Mdp oublié ?", command=lambda : avant_mdp_oublie(self.id_entry.get(), obj))
+        self.oublie_button.pack(side="left", padx=10, pady=20)

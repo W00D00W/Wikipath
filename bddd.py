@@ -2,8 +2,6 @@
 import sqlite3
 import tkinter as tk
 from tkinter import messagebox
-from mdpoubl import oubl
-from signup import *
 
 
 
