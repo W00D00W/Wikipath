@@ -26,7 +26,7 @@ Nous avons voulu rendre la partie base de donnée la plus solide possible en gé
 
 #### Affichage du graphe
 
-L'affichage du graphe est géré avec un module `canva`.
+L'affichage du graphe est géré avec un wiget `canvas` du module `Tkinter`.
 - Il est possible de bouger les points en maintenant le clic gauche dessus
 - Il est possible de bouger la totalité du graphe en maintenant le clic gauche à un endroit où il n'y a pas de noeuds
 - Pour se déplacer dans le graphe, il faut double cliquer sur une bulle affichée dans le graphe.
