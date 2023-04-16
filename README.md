@@ -21,7 +21,7 @@ Une appli qui vous permet d'utiliser au maximum la puissance de [Wikipédia](htt
 - Interface graphique Customtkinter
 - Design de l'interface sobre et minimaliste pour privilégier la lisibilité et la rendre la plus intuitive possible
 
-#### Gestion de la partie client
+#### Partie client
 
 Nous avons voulu rendre la partie base de donnée la plus solide possible en gérant les erreurs potentielles.
 - Possibilité de se connecter, ou de se créer un compte (bouton "S'inscrire / Se connecter" en haut de la page)
@@ -29,14 +29,19 @@ Nous avons voulu rendre la partie base de donnée la plus solide possible en gé
 - Possibilité pour l'utilisateur de se rendre sur son compte une fois connecté, où se trouve ses informations personnelles 
 - L'utilisateur peut enregister un noeux sur le graphe en cliquant sur le bouton dans l'espace à droite du canva, pour le retrouver ultérieurement sur son espace personnel
 
-#### Gestion de l'affichage du graphe
+#### Affichage du graphe
 
 L'affichage du graphe est géré avec un module `canva`.
 - Il est possible de bouger les points en maintenant le clic gauche dessus
 - Il est possible de bouger la totalité du graphe en maintenant le clic gauche à un endroit où il n'y a pas de noeuds 
 
-#### Gestion de l'encadré
+#### Encadré décrivant la page centrale du graphe
 
+Cet encadré se trouve à droite du canva.
+- Affichage du titre, du résumé et si c'est pertinent d'un image de la page qui est au centre du graphe.
+- deux boutons:
+  - "Aller à la page" qui ouvre la page concernée dans un navigateur web
+  - "Recharger les liens" qui propose une autre sélection de liens de la même page, et qui peut aussi servie à recentrer le graphe si l'on se perd dans le canva 
 
  
 ## Installation
