@@ -64,21 +64,23 @@ class interface:
 
 
             if self.co > 0:
-                self.texte[1].configure(width=largeur_frame, height = hauteur_canvas/4)
-                self.tk.update()
+                if self.image_wiki != None:
+                
+                    self.texte[1].configure(width=largeur_frame, height = hauteur_canvas/4)
+                    self.tk.update()
 
-                wpercent = (self.texte[1].winfo_width()/float(self.image_wiki.size[0]))
-                hsize = int((float(self.image_wiki.size[1])*float(wpercent)))
+                    hpercent = (self.texte[1].winfo_height()/float(self.image_wiki.size[0]))
+                    wsize = int((float(self.image_wiki.size[0])*float(hpercent)))
 
-                redimension = self.image_wiki.resize((self.texte[1].winfo_width(), hsize), Image.Resampling.LANCZOS)
-                self.texte[1].delete('all')
-                self.image_wiki = ImageTk.PhotoImage(redimension)
+                    redimension = self.image_wiki.resize((wsize, self.image_wiki.size[1]), Image.Resampling.LANCZOS)
+                    self.texte[1].delete('all')
+                    self.img = ImageTk.PhotoImage(redimension)
 
-                self.img = self.texte[1].create_image(self.texte[1].winfo_width()/2, self.texte[1].winfo_height()/2, image=self.image_wiki)
-                self.tk.update()
+                    self.image_page = self.texte[1].create_image(self.texte[1].winfo_width()/2, self.texte[1].winfo_height()/2, image=self.img)
+                    self.tk.update()
 
-                self.texte[1].configure(height=self.image_wiki.size[1])    
-                self.tk.update()
+                    self.texte[1].configure(height=self.image_wiki.size[1])    
+                    self.tk.update()
 
 
 
@@ -99,6 +101,7 @@ class interface:
         self.hauteur = 0
         self.page_conn = None
         self.page_actuelle = 0
+        self.image_page = None
  
 
         customtkinter.set_appearance_mode("Dark")
@@ -204,6 +207,7 @@ class interface:
         self.compteur.configure(text=self.profondeur)
 
     def affichage_page(self, page):
+        self.co += 1
         page = self.page.wiki.page(page.val)
         
         sum = page.summary
@@ -240,18 +244,20 @@ class interface:
             self.texte[1].grid(row=1, column=0, columnspan=1)
             self.texte[1].update()
             self.texte[1].delete('all')
-
 #####################
-            wpercent = (self.texte[1].winfo_width()/float(self.image_wiki.size[0]))
-            hsize = int((float(self.image_wiki.size[1])*float(wpercent)))
+            hpercent = (self.texte[1].winfo_height()/float(self.image_wiki.size[0]))
+            wsize = int((float(self.image_wiki.size[0])*float(hpercent)))
 
-            redimension = self.image_wiki.resize((self.texte[1].winfo_width(), hsize), Image.Resampling.LANCZOS)
-            self.image_wiki = ImageTk.PhotoImage(redimension)
+            redimension = self.image_wiki.resize((wsize, self.image_wiki.size[1]), Image.Resampling.LANCZOS)
+            self.texte[1].delete('all')
+            self.img = ImageTk.PhotoImage(redimension)
 
-            self.img = self.texte[1].create_image(self.texte[1].winfo_width()/2, self.texte[1].winfo_height()/2, image=self.image_wiki)
+            self.image_page = self.texte[1].create_image(self.texte[1].winfo_width()/2, self.texte[1].winfo_height()/2, image=self.img)
+            self.tk.update()
+
+            self.texte[1].configure(height=self.image_wiki.size[1])    
             self.tk.update()
 #######################
-
         else:
             self.texte[1].grid_forget()
         self.texte[2].configure(state='normal')
@@ -315,7 +321,6 @@ class interface:
         bouge l'ensemble ou un item en fonction de la souris
         """
         if self.item is not None:
-            print(self.item)
             x, y = event.x-self.item.largeur/2, event.y-self.item.hauteur/2
             bbox = self.graphe.arrondi(x, y, x+self.item.largeur, y+self.item.hauteur, 20)
             self.canvas.coords(self.item.affichage[0], *bbox)

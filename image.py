@@ -16,22 +16,23 @@ def recuperation_image(nom):
     except:
         return None
 
-    if len(soup) > 0:
-        max = None
-        for el in soup:
-            if str(el).count('data-file-width'):
-                if max == None:
-                    max = el
-                if int(el['data-file-width']) > int(max['data-file-width']):
-                    max = el
-        soup = max
-        if soup != None:
-            if int(soup['data-file-width']) > 50:
+    try : 
+        if len(soup) > 0:
+            max = None
+            for el in soup:
+                if str(el).count('data-file-width'):
+                    if max == None:
+                        max = el
+                    if int(el['data-file-width']) > int(max['data-file-width']):
+                        max = el
+            soup = max
+            if soup != None:
+                if int(soup['data-file-width']) > 50:
 
-                response = requests.get("https:"+str(soup['src']))
-                print("https:"+str(soup['src']))
+                    response = requests.get("https:"+str(soup['src']))
 
-                return Image.open(BytesIO(response.content))
-
+                    return Image.open(BytesIO(response.content))
+    except:
+        return None
 
 
