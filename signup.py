@@ -40,6 +40,8 @@ class conn:
         # Création des boutons de connexion / inscription
         self.login_button = customtkinter.CTkButton(self.button_frame, text="Se connecter / s'inscrire", command=lambda : self.login(obj))
         self.login_button.pack(side="left", padx=10, pady=20)
+        self.signup_button = customtkinter.CTkButton(self.button_frame, text="Se connecter / s'inscrire", command=lambda : self.login(obj))
+        self.signup_button.pack(side="left", padx=10, pady=20)
 
     # Fonction pour se connecter
     def login(self, obj):
