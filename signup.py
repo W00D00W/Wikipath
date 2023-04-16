@@ -44,7 +44,7 @@ class conn:
         self.login_button.pack(side="left", padx=10, pady=20)
         self.signup_button = customtkinter.CTkButton(self.button_frame, text="S'inscrire", command=lambda : sign_up(self.id_entry.get(), self.mdp_entry.get()))
         self.signup_button.pack(side="left", padx=10, pady=20)
-        self.oublie_button = customtkinter.CTkButton(self.button_frame, text="Mdp oublié ?", command=lambda : sign_up(self.id_entry.get(), self.mdp_entry.get()))
+        self.oublie_button = customtkinter.CTkButton(self.button_frame, text="Mdp oublié ?", command=lambda : avant_mdp_oublie(self.id_entry.get(), obj))
         self.oublie_button.pack(side="left", padx=10, pady=20)
 
             
