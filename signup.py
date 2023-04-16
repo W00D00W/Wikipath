@@ -3,7 +3,7 @@ import sqlite3
 import customtkinter
 
 #importation des autres fichiers du projet
-from  Bdd import *
+from  bdd import *
 from page import *
 from pageconn import *
 
