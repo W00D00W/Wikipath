@@ -56,11 +56,31 @@ class interface:
 
                 largeur_frame = self.zone_droite.winfo_width()
 
-                self.texte[2].configure(width=largeur_frame-largeur_frame/4, height= hauteur_canvas/2)
+                self.texte[2].configure(width=largeur_frame-largeur_frame/4, height= hauteur_canvas/2.5)
                 self.tk.update()
 
                 self.nb_n.place_configure(width=110, height=50)
                 self.nb_n.place(x=10, y=10)
+
+
+            if self.co > 0:
+                self.texte[1].configure(width=largeur_frame, height = hauteur_canvas/4)
+                self.tk.update()
+
+                wpercent = (self.texte[1].winfo_width()/float(self.image_wiki.size[0]))
+                hsize = int((float(self.image_wiki.size[1])*float(wpercent)))
+
+                redimension = self.image_wiki.resize((self.texte[1].winfo_width(), hsize), Image.Resampling.LANCZOS)
+                self.texte[1].delete('all')
+                self.image_wiki = ImageTk.PhotoImage(redimension)
+
+                self.img = self.texte[1].create_image(self.texte[1].winfo_width()/2, self.texte[1].winfo_height()/2, image=self.image_wiki)
+                self.tk.update()
+
+                self.texte[1].configure(height=self.image_wiki.size[1])    
+                self.tk.update()
+
+
 
         elif self.page_actuelle == 1 or self.page_actuelle == 2:
             self.barre_menu.configure(width=self.largeur, height=30)
@@ -79,6 +99,7 @@ class interface:
         self.hauteur = 0
         self.page_conn = None
         self.page_actuelle = 0
+ 
 
         customtkinter.set_appearance_mode("Dark")
         self.tk.geometry(str(self.tk.winfo_screenwidth())+'x'+str(self.tk.winfo_screenheight()))
@@ -214,19 +235,23 @@ class interface:
                 titre_modif += '\n'
         
         self.texte[0].configure(text= titre_modif)
-        self.image_wiki = recuperation_image(page.fullurl)
+        self.image_wiki = recuperation_image(page.title)
         if self.image_wiki != None:
             self.texte[1].grid(row=1, column=0, columnspan=1)
             self.texte[1].update()
             self.texte[1].delete('all')
-            
-            wpercent = (basewidth/float(img.size[0]))
 
+#####################
+            wpercent = (self.texte[1].winfo_width()/float(self.image_wiki.size[0]))
+            hsize = int((float(self.image_wiki.size[1])*float(wpercent)))
 
-            redimension = self.image_wiki.resize((self.texte[1].winfo_width(), self.texte[1].winfo_height()), Image.Resampling.LANCZOS)
+            redimension = self.image_wiki.resize((self.texte[1].winfo_width(), hsize), Image.Resampling.LANCZOS)
             self.image_wiki = ImageTk.PhotoImage(redimension)
+
             self.img = self.texte[1].create_image(self.texte[1].winfo_width()/2, self.texte[1].winfo_height()/2, image=self.image_wiki)
             self.tk.update()
+#######################
+
         else:
             self.texte[1].grid_forget()
         self.texte[2].configure(state='normal')
@@ -388,3 +413,40 @@ class conn:
         self.signup_button.pack(side="left", padx=10, pady=20)
         self.oublie_button = customtkinter.CTkButton(self.button_frame, text="Mdp oublié ?", command=lambda : avant_mdp_oublie(self.id_entry.get(), obj))
         self.oublie_button.pack(side="left", padx=10, pady=20)
+
+### oublié 
+class oubl:
+    bdd = sqlite3.connect("bdd_user.db")
+    curseur = bdd.cursor()
+
+    def __init__(self, id, obj):
+        self.tk = obj.tk
+        obj.efface()
+        obj.page_actuelle = 2
+        obj.menu()
+        obj.definition_taille()
+
+        # Création du titre
+        self.title_label = customtkinter.CTkLabel(self.tk, text="Mdp oublié")
+        self.title_label.grid(row=1, column=0, pady=10, columnspan=4)
+
+        # Création des champs de saisie
+    
+
+        self.mdp_label = customtkinter.CTkLabel(self.tk, text="Nouveau mot de passe.")
+        self.mdp_label.grid(row=4, column=0, columnspan=4)
+        self.mdp_entry = customtkinter.CTkEntry(self.tk, show="*")
+        self.mdp_entry.grid(row=5, column=0, pady=5, columnspan=4)
+
+        self.mdp_label2 = customtkinter.CTkLabel(self.tk, text="Confirmez votre mot de passe.")
+        self.mdp_label2.grid(row=6, column=0, columnspan=4)
+        self.mdp_entry2 = customtkinter.CTkEntry(self.tk, show="*")
+        self.mdp_entry2.grid(row=7, column=0, pady=5, columnspan=4)
+
+        # Création d'un cadre pour les boutons
+        self.button_frame = customtkinter.CTkFrame(self.tk)
+        self.button_frame.grid(row=8, column=0, columnspan=4)
+
+        # Création des boutons de connexion / inscription / mdp oublié
+        self.confirmer = customtkinter.CTkButton(self.button_frame, text="Confirmer", command=lambda : mdpoublie(id, self.mdp_entry.get(), self.mdp_entry2.get(), obj))
+        self.confirmer.pack(side="left", padx=10, pady=20)

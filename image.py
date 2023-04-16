@@ -5,7 +5,8 @@ from io import BytesIO
 from bs4 import BeautifulSoup
 
 
-def recuperation_image(url):
+def recuperation_image(nom):
+    url = f"https://fr.wikipedia.org/w/index.php?title={nom}&action=info"
     reponse = requests.get(url)
     soup = BeautifulSoup(reponse.text, "html.parser")
     test = True
@@ -13,14 +14,7 @@ def recuperation_image(url):
         obj = soup.find('table')
         soup = obj.findAll('img')
     except:
-        test = False
-    if test == False:
-        try:
-            obj = soup.find('div', class_='thumbinner')
-            soup = obj.findAll('img')
-        except:
-            return None
-
+        return None
 
     if len(soup) > 0:
         max = None
@@ -35,10 +29,9 @@ def recuperation_image(url):
             if int(soup['data-file-width']) > 50:
 
                 response = requests.get("https:"+str(soup['src']))
+                print("https:"+str(soup['src']))
 
                 return Image.open(BytesIO(response.content))
-
-
 
 
 
