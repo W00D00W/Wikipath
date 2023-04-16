@@ -56,11 +56,15 @@ class interface:
 
                 largeur_frame = self.zone_droite.winfo_width()
 
-                self.texte[1].configure(width=largeur_frame-largeur_frame/4, height= hauteur_canvas/2)
+                self.texte[2].configure(width=largeur_frame-largeur_frame/4, height= hauteur_canvas/2)
                 self.tk.update()
+
+
 
                 self.nb_n.place_configure(width=110, height=50)
                 self.nb_n.place(x=10, y=10)
+
+
 
         elif self.page_actuelle == 1 or self.page_actuelle == 2:
             self.barre_menu.configure(width=self.largeur, height=30)
@@ -107,21 +111,21 @@ class interface:
 
         self.zone_droite.grid_propagate(False)
 
-        self.texte = [None, None, None, None]
+        self.texte = [None, None, None, None, None]
         self.texte[0] = customtkinter.CTkLabel(self.zone_droite, text = '', text_color='black')
         self.texte[0].grid(row=0, column=0, columnspan=1, pady=10, sticky='snew')
 
-        self.texte[1] = customtkinter.CTkButton(self.zone_droite, fg_color='transparent', image=recuperation_image(self.page.page_courante.url))
+        self.texte[1] = Canvas(self.zone_droite, bg='#bebfc2')
         self.texte[1].grid(row=1, column=0, columnspan=1)
 
         self.texte[2] = customtkinter.CTkTextbox(self.zone_droite, fg_color='transparent', text_color='black')
-        self.texte[2].grid(row=1, column=0, columnspan=1)
+        self.texte[2].grid(row=2, column=0, columnspan=1)
 
         self.texte[3] = customtkinter.CTkButton(self.zone_droite, text = 'Aller a la page', command=lambda : webbrowser.open_new(''))
-        self.texte[3].grid(row=2, column=0, columnspan=1, pady=10, sticky='S')
+        self.texte[3].grid(row=3, column=0, columnspan=1, pady=10, sticky='S')
 
         self.texte[4] = customtkinter.CTkButton(self.zone_droite, text='recharger les liens', command = lambda : self.page.regeneration_page(self, self.profondeur))
-        self.texte[4].grid(row=3, column=0, columnspan=1, pady=10)
+        self.texte[4].grid(row=4, column=0, columnspan=1, pady=10)
         
         
 
@@ -217,6 +221,8 @@ class interface:
                 titre_modif += '\n'
         
         self.texte[0].configure(text= titre_modif)
+        # img= recuperation_image(page.fullurl)
+        # self.texte[1].configure(image=img)
         self.texte[2].configure(state='normal')
         self.texte[2].delete(0.0, END)
         self.texte[2].insert("0.0", sum)

@@ -6,7 +6,6 @@ from bs4 import BeautifulSoup
 
 
 def recuperation_image(url):
-    url = "https://fr.wikipedia.org/wiki/France"
     reponse = requests.get(url)
     soup = BeautifulSoup(reponse.text, "html.parser")
     obj = soup.find('table')
@@ -19,6 +18,7 @@ def recuperation_image(url):
     soup = max
 
     response = requests.get("https:"+str(soup['src']))
+
 
     return ImageTk.PhotoImage(Image.open(BytesIO(response.content)))
 
