@@ -61,6 +61,7 @@ class interface:
 
 
 
+
                 self.nb_n.place_configure(width=110, height=50)
                 self.nb_n.place(x=10, y=10)
 
@@ -116,7 +117,7 @@ class interface:
         self.texte[0].grid(row=0, column=0, columnspan=1, pady=10, sticky='snew')
 
         self.texte[1] = Canvas(self.zone_droite, bg='#bebfc2')
-        self.texte[1].grid(row=1, column=0, columnspan=1)
+        
 
         self.texte[2] = customtkinter.CTkTextbox(self.zone_droite, fg_color='transparent', text_color='black')
         self.texte[2].grid(row=2, column=0, columnspan=1)
@@ -223,9 +224,12 @@ class interface:
         self.texte[0].configure(text= titre_modif)
         self.image_wiki = img= recuperation_image(page.fullurl)
         if img != None:
+            self.texte[1].grid(row=1, column=0, columnspan=1)
+            self.texte[1].update()
             self.texte[1].delete('all')
             self.img = self.texte[1].create_image(self.texte[1].winfo_width()/2, self.texte[1].winfo_height()/2, image=self.image_wiki)
-            print('img crée')
+        else:
+            self.texte[1].grid_forget()
         self.texte[2].configure(state='normal')
         self.texte[2].delete(0.0, END)
         self.texte[2].insert("0.0", sum)
