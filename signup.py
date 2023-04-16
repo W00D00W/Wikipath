@@ -6,6 +6,7 @@ import customtkinter
 from  bdd import *
 from page import *
 from pageconn import *
+from bdd import *
 
 
 class conn:
@@ -43,7 +44,15 @@ class conn:
     # Fonction pour se connecter
     def login(self, obj):
         if self.mdp_entry.get() !=" " and self.id_entry.get() != " " and len(self.mdp_entry.get())>7:
-            obj.page_conn = page_conn(obj, self.id_entry.get(), self.mdp_entry.get())
+            if existe(self.id_entry.get()):
+                print('1')
+                if verif(self.id_entry.get(), self.mdp_entry.get()):
+                    print("2")
+                    obj.page_conn = page_conn(obj, self.id_entry.get())
+            else:
+                sign_up(self.id_entry.get(), self.mdp_entry.get())
+                obj.page_conn = page_conn(obj, self.id_entry.get())
+            
 
 
 

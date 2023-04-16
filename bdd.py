@@ -6,36 +6,6 @@ import sqlite3
 bdd = sqlite3.connect("bdd_user.db")
 curseur = bdd.cursor()
 
-
-
-requete = """
-DROP TABLE IF EXISTS user; 
-"""
-curseur.execute(requete)
-requete = """
-CREATE TABLE user (
-id SRING PRIMARY KEY,
-mdp STRING
-);
-"""
-curseur.execute(requete)
-
-
-
-requete = """
-DROP TABLE IF EXISTS capture; 
-"""
-curseur.execute(requete)
-requete = """
-CREATE TABLE capture (
-id_user STRING REFERENCES user (id),
-nom_noeud STRING,
-PRIMARY KEY (id_user, nom_noeud));
-"""
-curseur.execute(requete)
-
-
-
 #fonction pour qu'un client S'inscrive au site 
 def sign_up(id, mdp):
     requete = """
@@ -54,7 +24,11 @@ def mdp_oublie(id, nouv_mdp):
     """
     curseur.execute(requete, (nouv_mdp, id))
 
-
+def existe(id):
+    id = str(id).split(' ')[0]
+    requete = """SELECT * FROM user WHERE id = ?"""
+    curseur.execute(requete, (id,))
+    return len(curseur.fetchall()) > 0
 
 #vérification des informations lors d'une connection d'un utilisateur
 def verif(id, mdp):
@@ -64,13 +38,7 @@ def verif(id, mdp):
     WHERE id = ? AND mdp = ?;
     """
     curseur.execute(requete, (id, mdp))
-    resultat = curseur.fetchall()
-    if resultat == []:
-        return False
-    elif str(resultat[0][1]) != mdp:
-        return False
-    else:
-        return True
+    return str(curseur.fetchall()[0][1]) == mdp
 
 
 #insérer dans la table "capture"
@@ -100,6 +68,29 @@ def chercher_captures(id_user):
     WHERE id_user = ?;
     """
     curseur.execute(requete, (id_user,))
-    a = curseur.fetchall()
-    return a 
+    return curseur.fetchall()
 
+if __name__ == '__main__':
+    requete = """
+    DROP TABLE IF EXISTS user; 
+    """
+    curseur.execute(requete)
+    requete = """
+    CREATE TABLE user (
+    id SRING PRIMARY KEY,
+    mdp STRING
+    );
+    """
+    curseur.execute(requete)
+
+    requete = """
+    DROP TABLE IF EXISTS capture; 
+    """
+    curseur.execute(requete)
+    requete = """
+    CREATE TABLE capture (
+    id_user STRING REFERENCES user (id),
+    nom_noeud STRING,
+    PRIMARY KEY (id_user, nom_noeud));
+    """
+    curseur.execute(requete)

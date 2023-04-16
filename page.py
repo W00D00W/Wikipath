@@ -1,21 +1,15 @@
-#importation librairies
 import wikipediaapi
 import random
-import math
+import math 
 
-#importation des autres fichiers du projet
 from noeud import *
 from pile import *
-
-
 
 class page:
     def __init__(self):
         self.wiki = wikipediaapi.Wikipedia('fr')
         self.page_courante = self.recuperation_page('Wikipedia')
         self.page_sauvegarde = self.wiki.page('Wikipedia')
-
-
 
     def recuperation_page(self, page = None, nbr=48):
         """
@@ -26,7 +20,6 @@ class page:
             page = self.wiki.page(self.page_courante.val)
         if type(page) == type('str'): 
             page = self.wiki.page(page)
-        print(page)
         if page.exists() != True:
             page = self.page_sauvegarde
         if page.title.count('Catégorie:')>=1:
@@ -38,31 +31,20 @@ class page:
         self.page_sauvegarde = page
         return noeud(page.title, voisins)
 
-
-
     def regeneration_page(self, it, n=0):
         it.canvas.delete('graphe')
         if n == 0: n = 48
         self.page_courante = self.recuperation_page(self.wiki.page(self.page_courante.val), n)
         it.graphe.graphe(it, self.page_courante)
 
-
-
     def changement_page(self,it,  v):
         it.canvas.delete('graphe')
         self.page_courante = self.recuperation_page(v)
         it.graphe.graphe(it, self.page_courante)
 
-
-
 class graphe:
-
-
-
     def __init__(self):
         self.pile = pile()
-
-
 
     def nbr_cercle(self, lst):
         """
@@ -75,8 +57,6 @@ class graphe:
             i += 1
             lst_remplace.append([lst.pop(0) for el in lst[:i*8]])
         return lst_remplace
-
-
 
     def arrondi(self, x1, y1, x2, y2, radius, **kwargs):
         points = [x1+radius, y1,
@@ -101,7 +81,6 @@ class graphe:
                 x1, y1]
         return points
 
-
     # définition de la fonction pour créer un rectangle avec des bords arrondis
     def create_rounded_rectangle(self, it, x1, y1, x2, y2, radius, **kwargs):
         """
@@ -110,14 +89,12 @@ class graphe:
         points = self.arrondi(x1, y1, x2, y2, radius)
         return it.create_polygon(points, smooth=True, **kwargs)
 
-
-
     def graphe(self, it, obj):
         """
         obj : un noeud contenant une page wikipedia ainsi que ses voisins
         """
 
-        position = [450,380]
+        position = [500,480]
         obj.x, obj.y = position[0], position[1]
         lst_angle = [el*(360 / len(obj.voisins)) for el in range(len(obj.voisins))]
 
