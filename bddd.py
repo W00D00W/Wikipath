@@ -37,7 +37,7 @@ def sign_up(id, mdp):
     """
     curseur.execute(requete, (id,))
     a = curseur.fetchall()
-    print(a)
+
     if a != []:
         erreur("Il y a déjà un utilisateur enregistré avec ce nom, essayez de vous connecter")
         autorisation = False
@@ -48,53 +48,24 @@ def sign_up(id, mdp):
     VALUES ("%s", "%s");
     """ % (id, mdp)
         curseur.execute(requete)
-
-
-def avant_mdp_oublie(id, obj):
-
-    autorisation = True
-    
-    requete = """
-    SELECT *
-    FROM user
-    WHERE id = ?;
-    """
-    curseur.execute(requete, (id,))
-    a = curseur.fetchall()
-    print(a)
-
-    if len(id) < 4:
-        erreur("Rentrez un identifiant avec au moins 4 carractères.")
-        autorisation = False
-    elif a == []:
-        erreur("Il n'y a pas de compte avec cet identifiant sur cette appli.")
-        autorisation = False
-
-    if autorisation:
-        obj.oublie = oubl(id, obj)
-    
+    return autorisation
 
 #Fonction mdp oublié
-def mdpoublie(id, nouv_mdp, conf_mdp, obj):
+def mdpoublie(id, nouv_mdp, conf_mdp):
 
     autorise = True
-
 
     if nouv_mdp != conf_mdp:
         erreur("Les deux mots de passes sont différents")
         autorise = False
 
     if autorise:
-
         requete = """
         UPDATE user
         SET mdp = ?
         WHERE id = ?;
         """
         curseur.execute(requete, (nouv_mdp, id))
-        obj.sign = conn(obj)
-
-
 
 #vérification des informations lors d'une connection d'un utilisateur
 def verif(id, mdp):
@@ -108,8 +79,6 @@ def verif(id, mdp):
     """
     curseur.execute(requete, (id,))
     a = curseur.fetchall()
-    print(a)
-
 
     if a == []:
         erreur("Il n'y a pas de compte avec cet identifiant sur cette appli.")
@@ -127,12 +96,6 @@ def verif(id, mdp):
             erreur("Ce n'est pas le bon mot de passe.")
         else:
             return True
-        
-    
-
-    
-    
-
 
 #insérer dans la table "capture"
 def insert_capture(noeud, id_user):

@@ -244,6 +244,7 @@ class interface:
             self.texte[1].grid(row=1, column=0, columnspan=1)
             self.texte[1].update()
             self.texte[1].delete('all')
+
 #####################
             hpercent = (self.texte[1].winfo_height()/float(self.image_wiki.size[0]))
             wsize = int((float(self.image_wiki.size[0])*float(hpercent)))
@@ -412,17 +413,23 @@ class conn:
         self.button_frame.grid(row=6, column=0, columnspan=4)
 
         # Création des boutons de connexion / inscription / mdp oublié
-        self.login_button = customtkinter.CTkButton(self.button_frame, text="Se connecter", command=lambda : verif(self.id_entry.get(), self.mdp_entry.get()))
+        self.login_button = customtkinter.CTkButton(self.button_frame, text="Se connecter", command=lambda : self.connexion(self.id_entry.get(), self.mdp_entry.get(), obj))
         self.login_button.pack(side="left", padx=10, pady=20)
-        self.signup_button = customtkinter.CTkButton(self.button_frame, text="S'inscrire", command=lambda : sign_up(self.id_entry.get(), self.mdp_entry.get()))
+        self.signup_button = customtkinter.CTkButton(self.button_frame, text="S'inscrire", command=lambda : self.inscription(self.id_entry.get(), self.mdp_entry.get(), obj))
         self.signup_button.pack(side="left", padx=10, pady=20)
-        self.oublie_button = customtkinter.CTkButton(self.button_frame, text="Mdp oublié ?", command=lambda : avant_mdp_oublie(self.id_entry.get(), obj))
+        self.oublie_button = customtkinter.CTkButton(self.button_frame, text="Mdp oublié ?", command=lambda : oubl(self.id_entry.get(), obj))
         self.oublie_button.pack(side="left", padx=10, pady=20)
+
+    def connexion(self, id, mdp, obj):
+        if verif(id, mdp):
+            obj.temp = page_conn(obj, id)
+    
+    def inscription(self, id, mdp, obj):
+        if sign_up(id, mdp):
+            obj.temp = page_conn(obj, id)
 
 ### oublié 
 class oubl:
-    bdd = sqlite3.connect("bdd_user.db")
-    curseur = bdd.cursor()
 
     def __init__(self, id, obj):
         self.tk = obj.tk
@@ -453,5 +460,9 @@ class oubl:
         self.button_frame.grid(row=8, column=0, columnspan=4)
 
         # Création des boutons de connexion / inscription / mdp oublié
-        self.confirmer = customtkinter.CTkButton(self.button_frame, text="Confirmer", command=lambda : mdpoublie(id, self.mdp_entry.get(), self.mdp_entry2.get(), obj))
-        self.confirmer.pack(side="left", padx=10, pady=20)
+        self.confirmer = customtkinter.CTkButton(self.button_frame, text="Confirmer", command=lambda : self.bouton_cliqué(id, self.mdp_entry.get(), self.mdp_entry2.get(), obj))
+        self.confirmer.grid(row=9, padx=10, pady=20)
+    
+    def bouton_cliqué(self, id, mdp1, mdp2, obj):
+        mdpoublie(id, mdp1, mdp2)
+        obj.temp = page_conn(obj, id)
