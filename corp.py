@@ -12,6 +12,7 @@ from interface import *
 
 if __name__ == "__main__":
     it = interface()
+    it.genere_graphe()
 
 
 

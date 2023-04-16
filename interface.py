@@ -11,8 +11,6 @@ from page import *
 
 class interface:
 
-
-
     def affichage_bouton(self, values):
         self.graphe.pile.vider_pile()
         self.profondeur = 48
@@ -27,7 +25,32 @@ class interface:
             self.recherche_page_ok.grid(row=0, column=2)
             self.page.regeneration_page(self, self.profondeur)
 
+    def definition_taille(self):
 
+        if self.largeur != self.tk.winfo_width() or self.hauteur != self.tk.winfo_height():
+            self.largeur = self.tk.winfo_width()
+            self.hauteur = self.tk.winfo_height()
+
+            ### menu
+            self.barre_menu.configure(width=self.largeur, height=30)
+            self.tk.update()
+
+            hauteur_barre_menu = self.barre_menu.winfo_height()
+
+            ### canvas
+            self.canvas.configure(width=self.largeur*3/4, height=self.hauteur-hauteur_barre_menu-30)
+            self.tk.update()
+
+            ### zone droite
+            hauteur_canvas = self.canvas.winfo_height()
+
+            self.zone_droite.configure(width=self.largeur/4, height=hauteur_canvas)
+            self.tk.update()
+
+            largeur_frame = self.zone_droite.winfo_width()
+
+            self.texte[1].configure(width=largeur_frame-largeur_frame/4, height= hauteur_canvas/2)
+            self.tk.update()
                 
     def __init__(self):
         self.page = page()
@@ -38,24 +61,25 @@ class interface:
         self.item = None
         self.pos = [0,0]
         self.co = 0
+        self.largeur = 0
+        self.hauteur = 0
 
         customtkinter.set_appearance_mode("Dark")
         self.tk.geometry(str(self.tk.winfo_screenwidth())+'x'+str(self.tk.winfo_screenheight()))
         self.tk.update()
+        self.tk.grid_propagate(False)
 
-        largeur = self.tk.winfo_width()
-        hauteur = self.tk.winfo_height()
+        self.tk.grid_columnconfigure(3, weight=1)
 
-        ### affichage canva
-        self.canvas = Canvas(self.tk,width = (largeur/4)*3, height = hauteur-30, bg="white")
-        self.canvas.grid(row=1, column=0, columnspan=3,rowspan=3, padx=15)
-
-        self.tk.grid_columnconfigure(3, weight = 1)
+        ### affichage canvas
+        self.canvas = Canvas(self.tk, bg="white")
+        self.canvas.grid(row=1, column=0)
+        self.canvas.grid_propagate(False)
 
         #### affichage menu
 
-        self.barre_menu = customtkinter.CTkFrame(master = self.tk, width = largeur, height= 30)
-        self.barre_menu.grid(row=0, column=0, columnspan=4, pady=10)
+        self.barre_menu = customtkinter.CTkFrame(master = self.tk)
+        self.barre_menu.grid(row=0, column=0, columnspan=4)
 
         for i in range(3):
             self.barre_menu.columnconfigure(i, weight=1)
@@ -82,21 +106,23 @@ class interface:
         self.recherche_page_ok = customtkinter.CTkButton(self.recherche, text='ok', width = 20, command= lambda : self.page.changement_page(self, self.recherche_page_entry.get()))
         self.recherche_page_ok.grid(row=0, column=5)
 
-        self.zone_droite = customtkinter.CTkFrame(self.tk, width = (self.tk.winfo_screenwidth()/4)-50, height=self.tk.winfo_screenheight()-120)
-
+        ### zone droite
+        self.zone_droite = Frame(self.tk, bg='#bebfc2')
         self.zone_droite.grid(row=1, column=3)
 
         self.zone_droite.rowconfigure(0, weight=1)
         self.zone_droite.rowconfigure(1, weight=1)
         self.zone_droite.rowconfigure(2, weight=1)
+        self.zone_droite.rowconfigure(3, weight=1)
+        self.zone_droite.columnconfigure(0, weight=1)
 
         self.zone_droite.grid_propagate(False)
 
         self.texte = [None, None, None, None]
-        self.texte[0] = customtkinter.CTkLabel(self.zone_droite, text = '')
+        self.texte[0] = customtkinter.CTkLabel(self.zone_droite, text = '', text_color='black')
         self.texte[0].grid(row=0, column=0, columnspan=1, pady=10, sticky='snew')
 
-        self.texte[1] = customtkinter.CTkTextbox(self.zone_droite, width= 330, height=600, fg_color='transparent')
+        self.texte[1] = customtkinter.CTkTextbox(self.zone_droite, fg_color='transparent', text_color='black')
         self.texte[1].grid(row=1, column=0, columnspan=1)
 
         self.texte[2] = customtkinter.CTkButton(self.zone_droite, text = 'Aller a la page', command=lambda : webbrowser.open_new(''))
@@ -105,36 +131,33 @@ class interface:
         self.texte[3] = customtkinter.CTkButton(self.zone_droite, text='recharger les liens', command = lambda : self.page.regeneration_page(self, self.profondeur))
         self.texte[3].grid(row=3, column=0, columnspan=1, pady=10)
         
-        ### bind action
+        self.definition_taille()
+
+        ### assignations
         self.canvas.bind('<Button-1>', self.actu_pos)
         self.canvas.bind('<Double-Button-1>', self.clic)
         self.canvas.bind('<B1-Motion>', self.item_bouge)
         self.canvas.bind('<ButtonRelease-1>', self.item_remove)
+        self.tk.bind('<Button-1>', self.actu_fenetre)
 
-        ### bouton
-        self.nb_n = customtkinter.CTkFrame(self.canvas, 100, 30)
+        # ### bouton
+        # self.nb_n = customtkinter.CTkFrame(self.canvas, 100, 30)
 
-        self.bouton_plus = customtkinter.CTkButton(self.nb_n, 20, 15, text='+', command=lambda : self.change_compteur(+1))
-        self.bouton_plus.grid(row=0, column=1)
+        # self.bouton_plus = customtkinter.CTkButton(self.nb_n, 20, 15, text='+', command=lambda : self.change_compteur(+1))
+        # self.bouton_plus.grid(row=0, column=1)
 
-        self.bouton_moins = customtkinter.CTkButton(self.nb_n, 20, 15, text='-', command=lambda : self.change_compteur(-1))
-        self.bouton_moins.grid(row=1, column=1)
+        # self.bouton_moins = customtkinter.CTkButton(self.nb_n, 20, 15, text='-', command=lambda : self.change_compteur(-1))
+        # self.bouton_moins.grid(row=1, column=1)
 
-        self.bouton_valide = customtkinter.CTkButton(self.nb_n, 20, 30, text='ok', command=lambda : self.page.regeneration_page(self,self.profondeur))
-        self.bouton_valide.grid(row=0, column=2, rowspan = 2)
+        # self.bouton_valide = customtkinter.CTkButton(self.nb_n, 20, 30, text='ok', command=lambda : self.page.regeneration_page(self,self.profondeur))
+        # self.bouton_valide.grid(row=0, column=2, rowspan = 2)
 
-        self.compteur = customtkinter.CTkLabel(self.nb_n, 40, 30, text=self.profondeur)
-        self.compteur.grid(row=0, column=0, rowspan=2)
-
-        self.canvas.create_window((largeur/4)*3-100, hauteur-200, window=self.nb_n)
-
-
+        # self.compteur = customtkinter.CTkLabel(self.nb_n, 40, 30, text=self.profondeur)
+        # self.compteur.grid(row=0, column=0, rowspan=2)
 
     def change_compteur(self, x):
         self.profondeur += x
         self.compteur.configure(text=self.profondeur)
-
-
 
     def affichage_page(self, page):
         page = self.page.wiki.page(page.val)
@@ -160,8 +183,6 @@ class interface:
         self.texte[1].configure(state='disabled')
         self.texte[2].configure(command= lambda : webbrowser.open_new(page.fullurl))
 
-
-
     def predefini(self):
         self.canvas.delete('graphe')
         self.page.page_courante = noeud('Wikipedia', [bulle('Catégorie: Littérature'), bulle('Catégorie: histoire'), bulle('Catégorie: musique'), bulle('Catégorie: mode'), 
@@ -170,13 +191,15 @@ class interface:
                             bulle('Catégorie: Informatique'), bulle('Catégorie: nature'), bulle('Catégorie: sport')])
         self.graphe.graphe(self, self.page.page_courante)
 
-
-
     def genere_graphe(self):
         self.arbre = self.graphe.graphe(self, self.page.page_courante)
 
 
     ### actions
+
+    def actu_fenetre(self, event):
+        self.definition_taille()
+
     def actu_pos(self, event):
         """
         actualise pos a chaque clic
