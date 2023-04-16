@@ -5,66 +5,47 @@ import customtkinter
 #importation des autres fichiers du projet
 from  bdd import *
 from page import *
+from pageconn import *
+
+
+class conn:
+    bdd = sqlite3.connect("bdd_user.db")
+    curseur = bdd.cursor()
+
+    def __init__(self, obj):
+        self.tk = obj.tk
+        obj.efface()
+        obj.page_actuelle = 1
+
+        # Création du titre
+        self.title_label = customtkinter.CTkLabel(self.tk, text="Espace membre")
+        self.title_label.pack(pady=10)
+
+        # Création des champs de saisie
+        self.id_label = customtkinter.CTkLabel(self.tk, text="Nom d'utilisateur")
+        self.id_label.pack()
+        self.id_entry = customtkinter.CTkEntry(self.tk)
+        self.id_entry.pack(pady=5)
+
+        self.mdp_label = customtkinter.CTkLabel(self.tk, text="Mot de passe")
+        self.mdp_label.pack()
+        self.mdp_entry = customtkinter.CTkEntry(self.tk, show="*")
+        self.mdp_entry.pack(pady=5)
+
+        # Création d'un cadre pour les boutons
+        self.button_frame = customtkinter.CTkFrame(self.tk)
+        self.button_frame.pack()
+
+        # Création des boutons de connexion / inscription
+        self.login_button = customtkinter.CTkButton(self.button_frame, text="Se connecter / s'inscrire", command=lambda : self.login(obj))
+        self.login_button.pack(side="left", padx=10, pady=20)
+
+    # Fonction pour se connecter
+    def login(self, obj):
+        if self.mdp_entry.get() !=" " and self.id_entry.get() != " " and len(self.mdp_entry.get())>7:
+            obj.page_conn = page_conn(obj, self.id_entry.get(), self.mdp_entry.get())
 
 
 
-bdd = sqlite3.connect("bdd_user.db")
-curseur = bdd.cursor()
 
 
-# définition de la fonction pour créer un rectangle avec des bords arrondis
-
-
-# Fonction pour se connecter
-def login():
-    id = id_entry.get()
-    mdp = mdp_entry.get()
-    print(verif(id, mdp))
-
-# Fonction pour s'inscrire
-def signup():
-    id = id_entry.get()
-    mdp = mdp_entry.get()
-    sign_up(id, mdp)
-
-# Création de la fenêtre
-tk = Tk()
-tk.attributes('-fullscreen', True)
-tk.update()
-
-# Création du titre
-title_label = customtkinter.CTkLabel(tk, text="Espace membre")
-title_label.pack(pady=10)
-
-# Création des champs de saisie
-id_label = customtkinter.CTkLabel(tk, text="Nom d'utilisateur")
-id_label.pack()
-id_entry = customtkinter.CTkEntry(tk)
-id_entry.pack(pady=5)
-
-mdp_label = customtkinter.CTkLabel(tk, text="Mot de passe")
-mdp_label.pack()
-mdp_entry = customtkinter.CTkEntry(tk, show="*")
-mdp_entry.pack(pady=5)
-
-# Création d'un cadre pour les boutons
-button_frame = customtkinter.CTkFrame(tk)
-button_frame.pack()
-
-# Création des boutons de connexion / inscription
-login_button = customtkinter.CTkButton(button_frame, text="Se connecter", command=login)
-login_button.pack(side="left", padx=10, pady=20)
-
-signup_button = customtkinter.CTkButton(button_frame, text="S'inscrire", command=signup)
-signup_button.pack(side="left", padx=10, pady=20)
-
-# Lancement de la boucle principale
-tk.mainloop()
-
-# requete="""
-# SELECT * 
-# FROM user;
-# """
-# curseur.execute(requete)
-# a = curseur.fetchall()
-# print(a)

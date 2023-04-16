@@ -5,11 +5,17 @@ import customtkinter
 #importation des autres fichiers du projet
 from noeud import *
 from page import *
+from pageconn import *
+from signup import *
 
 
 
 
 class interface:
+    def efface(self):
+        self.liste = self.tk.winfo_children()
+        for element in self.liste:
+            element.destroy()
 
     def affichage_bouton(self, values):
         self.graphe.pile.vider_pile()
@@ -27,30 +33,37 @@ class interface:
 
     def definition_taille(self):
 
-        if self.largeur != self.tk.winfo_width() or self.hauteur != self.tk.winfo_height():
-            self.largeur = self.tk.winfo_width()
-            self.hauteur = self.tk.winfo_height()
+        if self.page_actuelle == 0:
 
-            ### menu
-            self.barre_menu.configure(width=self.largeur, height=30)
-            self.tk.update()
+            if self.largeur != self.tk.winfo_width() or self.hauteur != self.tk.winfo_height():
+                self.largeur = self.tk.winfo_width()
+                self.hauteur = self.tk.winfo_height()
 
-            hauteur_barre_menu = self.barre_menu.winfo_height()
+                ### menu
+                self.barre_menu.configure(width=self.largeur, height=30)
+                self.tk.update()
 
-            ### canvas
-            self.canvas.configure(width=self.largeur*3/4, height=self.hauteur-hauteur_barre_menu-30)
-            self.tk.update()
+                hauteur_barre_menu = self.barre_menu.winfo_height()
 
-            ### zone droite
-            hauteur_canvas = self.canvas.winfo_height()
+                ### canvas
+                self.canvas.configure(width=self.largeur*3/4, height=self.hauteur-hauteur_barre_menu-65)
+                self.tk.update()
 
-            self.zone_droite.configure(width=self.largeur/4, height=hauteur_canvas)
-            self.tk.update()
+                ### zone droite
+                hauteur_canvas = self.canvas.winfo_height()
 
-            largeur_frame = self.zone_droite.winfo_width()
+                largeur_zone_droite = (self.largeur/4)*95/100
 
-            self.texte[1].configure(width=largeur_frame-largeur_frame/4, height= hauteur_canvas/2)
-            self.tk.update()
+                self.zone_droite.configure(width=largeur_zone_droite, height=hauteur_canvas)
+                self.tk.update()
+
+                largeur_frame = self.zone_droite.winfo_width()
+
+                self.texte[1].configure(width=largeur_frame-largeur_frame/4, height= hauteur_canvas/2)
+                self.tk.update()
+
+                self.nb_n.place_configure(width=110, height=50)
+                self.nb_n.place(x=10, y=10)
                 
     def __init__(self):
         self.page = page()
@@ -63,6 +76,8 @@ class interface:
         self.co = 0
         self.largeur = 0
         self.hauteur = 0
+        self.page_conn = None
+        self.page_actuelle = 0
 
         customtkinter.set_appearance_mode("Dark")
         self.tk.geometry(str(self.tk.winfo_screenwidth())+'x'+str(self.tk.winfo_screenheight()))
@@ -87,7 +102,7 @@ class interface:
         self.barre_menu.grid_propagate(False)
 
         ### creation des boutons propres au menu
-        self.login_button = customtkinter.CTkButton(self.barre_menu, text="Se connecter / S'inscrire")
+        self.login_button = customtkinter.CTkButton(self.barre_menu, text="Se connecter / S'inscrire", command=lambda : conn(self))
         self.login_button.grid(row=0, column=0, sticky='W', padx=10)
 
         self.quitter_button = customtkinter.CTkButton(self.barre_menu, text="Quitter")
@@ -131,7 +146,7 @@ class interface:
         self.texte[3] = customtkinter.CTkButton(self.zone_droite, text='recharger les liens', command = lambda : self.page.regeneration_page(self, self.profondeur))
         self.texte[3].grid(row=3, column=0, columnspan=1, pady=10)
         
-        self.definition_taille()
+        
 
         ### assignations
         self.canvas.bind('<Button-1>', self.actu_pos)
@@ -140,20 +155,22 @@ class interface:
         self.canvas.bind('<ButtonRelease-1>', self.item_remove)
         self.tk.bind('<Button-1>', self.actu_fenetre)
 
-        # ### bouton
-        # self.nb_n = customtkinter.CTkFrame(self.canvas, 100, 30)
+        ### bouton
+        self.nb_n = customtkinter.CTkFrame(self.canvas)
 
-        # self.bouton_plus = customtkinter.CTkButton(self.nb_n, 20, 15, text='+', command=lambda : self.change_compteur(+1))
-        # self.bouton_plus.grid(row=0, column=1)
+        self.bouton_plus = customtkinter.CTkButton(self.nb_n, 20, 15, text='+', command=lambda : self.change_compteur(+1))
+        self.bouton_plus.grid(row=0, column=1)
 
-        # self.bouton_moins = customtkinter.CTkButton(self.nb_n, 20, 15, text='-', command=lambda : self.change_compteur(-1))
-        # self.bouton_moins.grid(row=1, column=1)
+        self.bouton_moins = customtkinter.CTkButton(self.nb_n, 20, 15, text='-', command=lambda : self.change_compteur(-1))
+        self.bouton_moins.grid(row=1, column=1)
 
-        # self.bouton_valide = customtkinter.CTkButton(self.nb_n, 20, 30, text='ok', command=lambda : self.page.regeneration_page(self,self.profondeur))
-        # self.bouton_valide.grid(row=0, column=2, rowspan = 2)
+        self.bouton_valide = customtkinter.CTkButton(self.nb_n, 20, 30, text='ok', command=lambda : self.page.regeneration_page(self,self.profondeur))
+        self.bouton_valide.grid(row=0, column=2, rowspan = 2)
 
-        # self.compteur = customtkinter.CTkLabel(self.nb_n, 40, 30, text=self.profondeur)
-        # self.compteur.grid(row=0, column=0, rowspan=2)
+        self.compteur = customtkinter.CTkLabel(self.nb_n, 40, 30, text=self.profondeur)
+        self.compteur.grid(row=0, column=0, rowspan=2)
+
+        self.definition_taille()
 
     def change_compteur(self, x):
         self.profondeur += x
@@ -163,6 +180,20 @@ class interface:
         page = self.page.wiki.page(page.val)
         
         sum = page.summary
+
+        lst = sum.split(' ')
+
+        chaine = ""
+        cpt = 0
+        while len(lst) > 0:
+            if cpt+len(lst[0]) < 50 or len(lst[0]) > 50:
+                cpt += len(lst[0]) + 1
+                chaine += lst.pop(0) + ' '
+            else:
+                cpt = 0
+                chaine += '\n'
+
+        sum = chaine
     
         titre = page.title
         lst = titre.split(' ')

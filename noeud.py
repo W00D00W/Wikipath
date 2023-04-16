@@ -155,9 +155,6 @@ class noeud(bulle):
             [v.affichage_noeud(it, obj) for v in self.voisins] ## affiche tout les voisins
             [v.ajout_lien(it, self) for v in self.voisins] ## affiche tout les liens
 
-            print([[i.etat, i.val] for i in self.voisins[:5]])
-            print('----------------------------------------')
-
             for i in range(2):
                 it.canvas.tag_raise(self.affichage[i])
             for v in self.voisins:
@@ -168,7 +165,6 @@ class noeud(bulle):
 
     def ajout_voisin(self, voisin):
         if voisin not in self.voisins:
-            print(voisin, self.voisins[:3])
             self.voisins.insert(0, voisin)
     
 
