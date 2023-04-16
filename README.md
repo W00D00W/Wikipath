@@ -13,7 +13,6 @@ Une appli qui vous permet d'utiliser au maximum la puissance de [Wikipédia](htt
  
  ### Interface Utilisateur
 
-- Options de rendu dans la console (Unix et Windows)
 - Interface graphique Customtkinter
 - Design de l'interface sobre et minimaliste pour privilégier la lisibilité et la rendre la plus intuitive possible
 
