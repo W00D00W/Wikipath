@@ -1,18 +1,52 @@
 #importation librairies
 import sqlite3
-
+import tkinter as tk
+from tkinter import messagebox
 
 
 bdd = sqlite3.connect("bdd_user.db")
 curseur = bdd.cursor()
 
+def erreur(text_erreur):
+    """
+    prends le texte de l'erreur en param
+    affiche une erreur avec le texte passé en param
+    ne return rien
+    """
+    messagebox.showerror("Erreur", text_erreur)
+
+
+
 #fonction pour qu'un client S'inscrive au site 
 def sign_up(id, mdp):
+    
+    autorisation = True
+
+    if len(id) < 4:
+        erreur("Veuillez renter au moins 4 carractères pour votre nom")
+        autorisation = False
+    if len(mdp) < 8:
+        erreur("Veuillez renter au moins 8 carractères pour votre mdp")
+        autorisation = False
+
     requete = """
-INSERT INTO user
-VALUES ("%s", "%s");
-""" % (id, mdp)
-    curseur.execute(requete)
+    SELECT *
+    FROM user
+    WHERE id = ?;
+    """
+    curseur.execute(requete, (id,))
+    a = curseur.fetchall()
+    print(a)
+    if a != []:
+        erreur("Il y a déjà un utilisateur enregistré avec ce nom, essayez de vous connecter")
+        autorisation = False
+
+    if autorisation != False:
+        requete = """
+    INSERT INTO user
+    VALUES ("%s", "%s");
+    """ % (id, mdp)
+        curseur.execute(requete)
 
 
 #Fonction mdp oublié
@@ -24,21 +58,44 @@ def mdp_oublie(id, nouv_mdp):
     """
     curseur.execute(requete, (nouv_mdp, id))
 
-def existe(id):
-    id = str(id).split(' ')[0]
-    requete = """SELECT * FROM user WHERE id = ?"""
-    curseur.execute(requete, (id,))
-    return len(curseur.fetchall()) > 0
+
 
 #vérification des informations lors d'une connection d'un utilisateur
 def verif(id, mdp):
+
+    autorisation = True
+
     requete = """
     SELECT *
     FROM user
-    WHERE id = ? AND mdp = ?;
+    WHERE id = ?;
     """
-    curseur.execute(requete, (id, mdp))
-    return str(curseur.fetchall()[0][1]) == mdp
+    curseur.execute(requete, (id,))
+    a = curseur.fetchall()
+    print(a)
+
+
+    if a == []:
+        erreur("Il n'y a pas de compte avec cet identifiant sur cette appli.")
+    else:
+        requete = """
+        SELECT *
+        FROM user
+        WHERE id = ? AND mdp = ?;
+        """
+        curseur.execute(requete, (id, mdp))
+        b = curseur.fetchall()
+        print(b)
+        print("rr")
+        if b == []:
+            erreur("Ce n'est pas le bon mot de passe.")
+        else:
+            return True
+        
+    
+
+    
+    
 
 
 #insérer dans la table "capture"
@@ -69,6 +126,8 @@ def chercher_captures(id_user):
     """
     curseur.execute(requete, (id_user,))
     return curseur.fetchall()
+
+
 
 if __name__ == '__main__':
     requete = """

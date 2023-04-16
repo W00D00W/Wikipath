@@ -39,21 +39,14 @@ class conn:
         self.button_frame = customtkinter.CTkFrame(self.tk)
         self.button_frame.grid(row=6, column=0, columnspan=4)
 
-        # Création des boutons de connexion / inscription
-        self.login_button = customtkinter.CTkButton(self.button_frame, text="Se connecter", command=lambda : self.verif(obj))
+        # Création des boutons de connexion / inscription / mdp oublié
+        self.login_button = customtkinter.CTkButton(self.button_frame, text="Se connecter", command=lambda : verif(self.id_entry.get(), self.mdp_entry.get()))
         self.login_button.pack(side="left", padx=10, pady=20)
-        self.signup_button = customtkinter.CTkButton(self.button_frame, text="S'inscrire", command=lambda : self.login(obj))
+        self.signup_button = customtkinter.CTkButton(self.button_frame, text="S'inscrire", command=lambda : sign_up(self.id_entry.get(), self.mdp_entry.get()))
         self.signup_button.pack(side="left", padx=10, pady=20)
+        self.oublie_button = customtkinter.CTkButton(self.button_frame, text="Mdp oublié ?", command=lambda : sign_up(self.id_entry.get(), self.mdp_entry.get()))
+        self.oublie_button.pack(side="left", padx=10, pady=20)
 
-    # Fonction pour se connecter
-    def login(self, obj):
-        if self.mdp_entry.get() !=" " and self.id_entry.get() != " " and len(self.mdp_entry.get())>7:
-            if existe(self.id_entry.get()):
-                if verif(self.id_entry.get(), self.mdp_entry.get()):
-                    obj.page_conn = page_conn(obj, self.id_entry.get())
-            else:
-                sign_up(self.id_entry.get(), self.mdp_entry.get())
-                obj.page_conn = page_conn(obj, self.id_entry.get())
             
 
 
