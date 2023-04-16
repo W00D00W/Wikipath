@@ -4,7 +4,7 @@ import customtkinter
 
 #importation des autres fichiers du projet
 from page import *
-from Bdd import *
+from bddd import *
 
 
 class page_conn:

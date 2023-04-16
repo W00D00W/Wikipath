@@ -3,7 +3,7 @@ import sqlite3
 import customtkinter
 
 #importation des autres fichiers du projet
-from  bdd import *
+from bddd import verif, sign_up, avant_mdp_oublie
 from page import *
 from pageconn import *
 
