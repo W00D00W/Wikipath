@@ -38,6 +38,8 @@ L'affichage du graphe est géré avec un wiget `canvas` du module `Tkinter`.
   - Cliquer sur "Prédéfini" pour avoir notre sélection personnelle de Catégories
   - Cliquer sur "Rechercher" et entrer le nom d'un page, puis cliquer sur "ok"
   - Aller sur votre espace personnel et partir d'une page qui a au préalable été enregistrée
+ 
+ - Durant
 
 #### Encadré décrivant la page centrale du graphe
 
