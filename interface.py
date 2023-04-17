@@ -32,7 +32,6 @@ class interface:
     def definition_taille(self):
         if self.largeur != self.tk.winfo_width() or self.hauteur != self.tk.winfo_height():
             if self.page_actuelle == 0:
-
                 self.largeur = self.tk.winfo_width()
                 self.hauteur = self.tk.winfo_height()
 
@@ -59,13 +58,8 @@ class interface:
                 self.texte[2].configure(width=largeur_frame-largeur_frame/4, height= hauteur_canvas/2.5)
                 self.tk.update()
 
-                # self.nb_n.place_configure(width=110, height=50)
-                # self.nb_n.place(x=10, y=10)
-
-
             if self.co > 0:
                 if self.image_wiki != None:
-                
                     self.texte[1].configure(width=largeur_frame, height = hauteur_canvas/4)
                     self.tk.update()
 
@@ -102,7 +96,6 @@ class interface:
         self.page_conn = None
         self.page_actuelle = 0
         self.image_page = None
- 
 
         customtkinter.set_appearance_mode("Dark")
         self.tk.geometry(str(self.tk.winfo_screenwidth())+'x'+str(self.tk.winfo_screenheight()))
@@ -116,7 +109,7 @@ class interface:
         self.canvas.grid(row=1, column=0)
         self.canvas.grid_propagate(False)
 
-        self.menu()
+        self.menu() ### creation du menu 
 
         ### zone droite
         self.zone_droite = Frame(self.tk, bg='#bebfc2')
@@ -127,24 +120,28 @@ class interface:
         self.zone_droite.rowconfigure(2, weight=1)
         self.zone_droite.rowconfigure(3, weight=1)
         self.zone_droite.columnconfigure(0, weight=1)
+        self.zone_droite.columnconfigure(1, weight=1)
 
         self.zone_droite.grid_propagate(False)
 
+        ### creation du texte dans la zone droite
+        self.btn_fav = customtkinter.CTkButton(self.zone_droite, text ='', image=customtkinter.CTkImage(Image.open("image/coeur_vide.png")), width=20, height=20)
+        self.btn_fav.grid(row=0, column=1, padx=20)
+        
         self.texte = [None, None, None, None, None]
         self.texte[0] = customtkinter.CTkLabel(self.zone_droite, text = '', text_color='black')
         self.texte[0].grid(row=0, column=0, columnspan=1, pady=10, sticky='snew')
 
         self.texte[1] = Canvas(self.zone_droite, bg='#bebfc2', bd=0, highlightbackground='#bebfc2')
-        
 
         self.texte[2] = customtkinter.CTkTextbox(self.zone_droite, fg_color='transparent', text_color='black')
-        self.texte[2].grid(row=2, column=0, columnspan=1)
+        self.texte[2].grid(row=2, column=0, columnspan=2)
 
         self.texte[3] = customtkinter.CTkButton(self.zone_droite, text = 'Aller a la page', command=lambda : webbrowser.open_new(''))
-        self.texte[3].grid(row=3, column=0, columnspan=1, pady=10, sticky='S')
+        self.texte[3].grid(row=3, column=0, columnspan=2, pady=10, sticky='S')
 
         self.texte[4] = customtkinter.CTkButton(self.zone_droite, text='recharger les liens', command = lambda : self.page.regeneration_page(self, self.profondeur))
-        self.texte[4].grid(row=4, column=0, columnspan=1, pady=10)
+        self.texte[4].grid(row=4, column=0, columnspan=2, pady=10)
 
         ### assignations
         self.canvas.bind('<Button-1>', self.actu_pos)
@@ -152,21 +149,6 @@ class interface:
         self.canvas.bind('<B1-Motion>', self.item_bouge)
         self.canvas.bind('<ButtonRelease-1>', self.item_remove)
         self.tk.bind('<Button-1>', self.actu_fenetre)
-
-        ### bouton
-        # self.nb_n = customtkinter.CTkFrame(self.canvas)
-
-        # self.bouton_plus = customtkinter.CTkButton(self.nb_n, 20, 15, text='+', command=lambda : self.change_compteur(+1))
-        # self.bouton_plus.grid(row=0, column=1)
-
-        # self.bouton_moins = customtkinter.CTkButton(self.nb_n, 20, 15, text='-', command=lambda : self.change_compteur(-1))
-        # self.bouton_moins.grid(row=1, column=1)
-
-        # self.bouton_valide = customtkinter.CTkButton(self.nb_n, 20, 30, text='ok', command=lambda : self.page.regeneration_page(self,self.profondeur))
-        # self.bouton_valide.grid(row=0, column=2, rowspan = 2)
-
-        # self.compteur = customtkinter.CTkLabel(self.nb_n, 40, 30, text=self.profondeur)
-        # self.compteur.grid(row=0, column=0, rowspan=2)
 
         self.definition_taille()
 

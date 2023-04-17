@@ -3,6 +3,7 @@ from PIL import ImageTk, Image
 import requests
 from io import BytesIO
 from bs4 import BeautifulSoup
+import customtkinter
 
 
 def recuperation_image(nom):
@@ -32,7 +33,7 @@ def recuperation_image(nom):
             if soup != None:
                 response = requests.get("https:"+str(soup['src']))
 
-                return Image.open(BytesIO(response.content))
+                return customtkinter.CTkImage(Image.open(BytesIO(response.content)))
     except:
         return None
 
