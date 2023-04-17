@@ -80,8 +80,9 @@ class bulle:
         """
         attribue les coordonées x et y du canvas pour l'objet au x et y de l'objet
         """
-        self.x = it.canvas.coords(self.affichage[1])[0]-self.largeur/2
-        self.y = it.canvas.coords(self.affichage[1])[1]-self.hauteur/2
+        if len(self.affichage) > 0:
+            self.x = it.canvas.coords(self.affichage[1])[0]-self.largeur/2
+            self.y = it.canvas.coords(self.affichage[1])[1]-self.hauteur/2
 
 
     ### verifie si l'objet est affiché par dessus un autre, si oui le déplace

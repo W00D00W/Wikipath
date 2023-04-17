@@ -7,9 +7,10 @@ from bs4 import BeautifulSoup
 
 def recuperation_image(nom):
     url = f"https://fr.wikipedia.org/w/index.php?title={nom}&action=info"
+
     reponse = requests.get(url)
     soup = BeautifulSoup(reponse.text, "html.parser")
-    test = True
+
     try : 
         obj = soup.find('table')
         soup = obj.findAll('img')
@@ -18,6 +19,7 @@ def recuperation_image(nom):
 
     try : 
         if len(soup) > 0:
+            print('ok')
             max = None
             for el in soup:
                 if str(el).count('data-file-width'):
@@ -26,13 +28,13 @@ def recuperation_image(nom):
                     if int(el['data-file-width']) > int(max['data-file-width']):
                         max = el
             soup = max
+            print(soup)
             if soup != None:
-                if int(soup['data-file-width']) > 50:
+                response = requests.get("https:"+str(soup['src']))
 
-                    response = requests.get("https:"+str(soup['src']))
-
-                    return Image.open(BytesIO(response.content))
+                return Image.open(BytesIO(response.content))
     except:
         return None
 
 
+recuperation_image("Survival horror")

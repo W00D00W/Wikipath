@@ -6,7 +6,7 @@ import customtkinter
 from noeud import *
 from page import *
 from image import *
-from bddd import *
+from bdd import *
 
 
 class interface:
@@ -18,7 +18,7 @@ class interface:
     def affichage_bouton(self, values):
         self.graphe.pile.vider_pile()
         self.profondeur = 48
-        self.change_compteur(0)
+        # self.change_compteur(0)
         if values == 'prédefinie':
             self.recherche_page_entry.grid_forget()
             self.recherche_page_ok.grid_forget()
@@ -59,8 +59,8 @@ class interface:
                 self.texte[2].configure(width=largeur_frame-largeur_frame/4, height= hauteur_canvas/2.5)
                 self.tk.update()
 
-                self.nb_n.place_configure(width=110, height=50)
-                self.nb_n.place(x=10, y=10)
+                # self.nb_n.place_configure(width=110, height=50)
+                # self.nb_n.place(x=10, y=10)
 
 
             if self.co > 0:
@@ -134,7 +134,7 @@ class interface:
         self.texte[0] = customtkinter.CTkLabel(self.zone_droite, text = '', text_color='black')
         self.texte[0].grid(row=0, column=0, columnspan=1, pady=10, sticky='snew')
 
-        self.texte[1] = Canvas(self.zone_droite, bg='#bebfc2')
+        self.texte[1] = Canvas(self.zone_droite, bg='#bebfc2', bd=0, highlightbackground='#bebfc2')
         
 
         self.texte[2] = customtkinter.CTkTextbox(self.zone_droite, fg_color='transparent', text_color='black')
@@ -154,19 +154,19 @@ class interface:
         self.tk.bind('<Button-1>', self.actu_fenetre)
 
         ### bouton
-        self.nb_n = customtkinter.CTkFrame(self.canvas)
+        # self.nb_n = customtkinter.CTkFrame(self.canvas)
 
-        self.bouton_plus = customtkinter.CTkButton(self.nb_n, 20, 15, text='+', command=lambda : self.change_compteur(+1))
-        self.bouton_plus.grid(row=0, column=1)
+        # self.bouton_plus = customtkinter.CTkButton(self.nb_n, 20, 15, text='+', command=lambda : self.change_compteur(+1))
+        # self.bouton_plus.grid(row=0, column=1)
 
-        self.bouton_moins = customtkinter.CTkButton(self.nb_n, 20, 15, text='-', command=lambda : self.change_compteur(-1))
-        self.bouton_moins.grid(row=1, column=1)
+        # self.bouton_moins = customtkinter.CTkButton(self.nb_n, 20, 15, text='-', command=lambda : self.change_compteur(-1))
+        # self.bouton_moins.grid(row=1, column=1)
 
-        self.bouton_valide = customtkinter.CTkButton(self.nb_n, 20, 30, text='ok', command=lambda : self.page.regeneration_page(self,self.profondeur))
-        self.bouton_valide.grid(row=0, column=2, rowspan = 2)
+        # self.bouton_valide = customtkinter.CTkButton(self.nb_n, 20, 30, text='ok', command=lambda : self.page.regeneration_page(self,self.profondeur))
+        # self.bouton_valide.grid(row=0, column=2, rowspan = 2)
 
-        self.compteur = customtkinter.CTkLabel(self.nb_n, 40, 30, text=self.profondeur)
-        self.compteur.grid(row=0, column=0, rowspan=2)
+        # self.compteur = customtkinter.CTkLabel(self.nb_n, 40, 30, text=self.profondeur)
+        # self.compteur.grid(row=0, column=0, rowspan=2)
 
         self.definition_taille()
 
@@ -202,9 +202,9 @@ class interface:
         self.recherche_page_ok = customtkinter.CTkButton(self.recherche, text='ok', width = 20, command= lambda : self.page.changement_page(self, self.recherche_page_entry.get()))
         self.recherche_page_ok.grid(row=0, column=5)
 
-    def change_compteur(self, x):
-        self.profondeur += x
-        self.compteur.configure(text=self.profondeur)
+    # def change_compteur(self, x):
+    #     self.profondeur += x
+    #     self.compteur.configure(text=self.profondeur)
 
     def affichage_page(self, page):
         self.co += 1
@@ -241,6 +241,7 @@ class interface:
         self.texte[0].configure(text= titre_modif)
         self.image_wiki = recuperation_image(page.title)
         if self.image_wiki != None:
+            self.zone_droite.grid_columnconfigure(1, weight=1)
             self.texte[1].grid(row=1, column=0, columnspan=1)
             self.texte[1].update()
             self.texte[1].delete('all')
@@ -261,6 +262,7 @@ class interface:
 #######################
         else:
             self.texte[1].grid_forget()
+            self.zone_droite.grid_columnconfigure(1, weight=0)
         self.texte[2].configure(state='normal')
         self.texte[2].delete(0.0, END)
         self.texte[2].insert("0.0", sum)
