@@ -6,6 +6,10 @@ from bdd import *
 
 from image import *
 import webbrowser
+import win32api
+
+from PySide6 import QtGui
+
 
 class gestion_page:
     """
@@ -19,7 +23,11 @@ class gestion_page:
         self.page_dico = {'page_interface' : interface(self), 'page_connexion' : conn(self), 'page_compte' : page_conn(self)}
         self.page_actuelle = self.page_dico['page_interface'] ## correspond a l'objet de la page actuelle
         self.menu = menu(self)
-    
+
+        ### pour recuperer le ratio de l'echelle 
+        self.echelle = QtGui.QGuiApplication([]).screens()[0].devicePixelRatio()
+        
+
     def fenetre_affiche(self): ### une seule fois au lancement
         ### propre a l'affichage de la page
         customtkinter.set_appearance_mode("Dark")
@@ -97,7 +105,7 @@ class menu:
         self.elements['recherche_valide'].grid(row=0, column=5)
 
     def taille(self):
-        self.elements['barre_menu'].configure(width=self.parent.largeur*100/125, height=30)
+        self.elements['barre_menu'].configure(width=self.parent.largeur/self.parent.echelle, height=30)
         self.tk.update()
 
 class zone_droite:
@@ -110,7 +118,7 @@ class zone_droite:
         self.elements = {'zone_droite' : Frame(self.tk, bg='#bebfc2')}
         self.elements = {**self.elements, **{'bouton_favori' : customtkinter.CTkButton(self.elements['zone_droite'], text ='', image=customtkinter.CTkImage(Image.open("image/coeur_vide.png")), width=20, height=20),
                                         'texte': [customtkinter.CTkLabel(self.elements['zone_droite'], text = '', text_color='black'), 
-                                                Canvas(self.elements['zone_droite'], bg='#bebfc2', bd=0, highlightbackground='#bebfc2'),
+                                                Label(self.elements['zone_droite'], bg='#bebfc2', bd=0, highlightbackground='#bebfc2'),
                                                 customtkinter.CTkTextbox(self.elements['zone_droite'], fg_color='transparent', text_color='black'),
                                                 customtkinter.CTkButton(self.elements['zone_droite'], text = 'Aller a la page'),
                                                 customtkinter.CTkButton(self.elements['zone_droite'], text='recharger les liens')]}}
@@ -127,18 +135,26 @@ class zone_droite:
         self.elements['bouton_favori'].grid(row=0, column=1, padx=20)
 
         self.elements['texte'][0].grid(row=0, column=0, columnspan=1, pady=10, sticky='snew')
+        self.elements['texte'][1].grid(row=1, column=0, columnspan=2)
         self.elements['texte'][2].grid(row=2, column=0, columnspan=2)
         self.elements['texte'][3].grid(row=3, column=0, columnspan=2, pady=10, sticky='S')
         self.elements['texte'][4].grid(row=4, column=0, columnspan=2, pady=10)
+        
 
     def affichage_page(self, page_objet):
         page = self.parent.page.wiki.page(page_objet.val)
         sum = page.summary
 
         titre = page.title
+
         
         self.elements['texte'][0].configure(text= titre)
         self.elements['image_wiki'] = recuperation_image(page.title)
+
+        self.image = recuperation_image(self.parent.page.page_courante.val)
+        # self.image_m = configuration_image(self, self.image)
+
+        self.elements['texte'][1].config(image=self.image)
 
         ## configuration des éléments
         ## texte résumé de wikipédia
@@ -184,8 +200,6 @@ class interface(page_tkinter):
     def taille(self):
         hauteur_barre_menu = self.parent.menu.elements['barre_menu'].winfo_height()
 
-        print(hauteur_barre_menu)
-
         ### canvas
         self.canvas.configure(width=self.parent.largeur*3/4, height=self.parent.hauteur-hauteur_barre_menu)
         self.tk.update()
@@ -214,7 +228,7 @@ class interface(page_tkinter):
             self.predefini()
         else:
             self.page.page_courante = bulle('Wikipedia')
-            self.page.regeneration_page()
+            self.page.regeneration_page()  ### a modifier a voir plus tard 
             self.parent.menu.elements['valeurs_entre'].grid(row=0, column=1)
             self.parent.menu.elements['recherche_valide'].grid(row=0, column=2)
         self.parent.changement_page('page_interface')
@@ -223,7 +237,6 @@ class interface(page_tkinter):
         """
         permet de generer le graphe prédéfini
         """
-        self.canvas.delete('graphe')
         self.page.page_courante = noeud('Wikipedia', [bulle('Catégorie: Littérature'), bulle('Catégorie: histoire'), bulle('Catégorie: musique'), bulle('Catégorie: mode'), 
                             bulle('Catégorie: art'), bulle('Catégorie: culture'), bulle('Catégorie: géographie'), bulle('Catégorie: géopolitique'), 
                             bulle('Catégorie: politique'), bulle('Catégorie: culture pop'), bulle('Catégorie: philosophie'), bulle('Catégorie: mathématiques'),

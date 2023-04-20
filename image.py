@@ -4,6 +4,7 @@ import requests
 from io import BytesIO
 from bs4 import BeautifulSoup
 import customtkinter
+import urllib.request
 
 
 def recuperation_image(nom):
@@ -18,42 +19,34 @@ def recuperation_image(nom):
     except:
         return None
 
-    try : 
-        if len(soup) > 0:
-            print('ok')
-            max = None
-            for el in soup:
-                if str(el).count('data-file-width'):
-                    if max == None:
-                        max = el
-                    if int(el['data-file-width']) > int(max['data-file-width']):
-                        max = el
-            soup = max
-            print(soup)
-            if soup != None:
-                response = requests.get("https:"+str(soup['src']))
+    if len(soup) > 0:
+        max = None
+        for el in soup:
+            if str(el).count('data-file-width'):
+                if max == None:
+                    max = el
+                if int(el['data-file-width']) > int(max['data-file-width']):
+                    max = el
+        soup = max
+        if soup != None:
+            with urllib.request.urlopen("https:"+str(soup['src'])) as u:
+                image_data = u.read()
+            image = Image.open(BytesIO(image_data))
 
-                return customtkinter.CTkImage(Image.open(BytesIO(response.content)))
-    except:
-        return None
+            return ImageTk.PhotoImage(image)
 
 def configuration_image(objet, image):
     ### definition taille fenetre
     if image != None:
-        hpercent = (objet.texte[1].winfo_height()/float(objet.image.size[0]))
-        wsize = int((float(objet.image.size[0])*float(hpercent)))
+        hauteur = objet.elements['texte'][1].winfo_width()
+        hauteur_img = image.size[1]
+        largeur_img = image.size[0]
+
+
+        largeur = largeur_img*hauteur/hauteur_img
 
         ### redimensionne l'objet
-        redimension = objet.image.resize((wsize, objet.image.size[1]), Image.Resampling.LANCZOS)
-        objet.elements['texte'][1].delete('all') ## on suprime tout ce qui à été affiché
-        objet.img = ImageTk.PhotoImage(redimension) ## crée une instance de l'image
+        redimension = objet.image.resize((int(round(largeur, 0)), int(round(hauteur,0))), Image.Resampling.LANCZOS)
 
-        ## mise a jour des éléments
-        objet.elements['image_wiki'] = objet.texte[1].create_image(objet.texte[1].winfo_width()/2, objet.texte[1].winfo_height()/2, image=objet.img)
-        objet.tk.update()
+        return ImageTk.PhotoImage(redimension) ## crée une instance de l'image
 
-        objet.elements['texte'][1].configure(height=objet.elements['image_wiki'].size[1])    
-        objet.tk.update()
-    else:
-        ## on oublie le canvas / a modifier pour afficher une image prédéfinie
-        objet.elements['texte'][1].grid_forget()

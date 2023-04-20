@@ -4,7 +4,6 @@ class pile:
 
     def ajout_pile(self, page_courante):
         if page_courante not in self.pile:
-            print(page_courante, self.pile)
             self.pile.append(page_courante)
             self.pile[-1].etat = False
             self.pile[-1].affichage = []
