@@ -127,7 +127,7 @@ class interface:
         ### creation du texte dans la zone droite
         self.btn_fav = customtkinter.CTkButton(self.zone_droite, text ='', image=customtkinter.CTkImage(Image.open("image/coeur_vide.png")), width=20, height=20)
         self.btn_fav.grid(row=0, column=1, padx=20)
-        
+
         self.texte = [None, None, None, None, None]
         self.texte[0] = customtkinter.CTkLabel(self.zone_droite, text = '', text_color='black')
         self.texte[0].grid(row=0, column=0, columnspan=1, pady=10, sticky='snew')
@@ -183,10 +183,6 @@ class interface:
 
         self.recherche_page_ok = customtkinter.CTkButton(self.recherche, text='ok', width = 20, command= lambda : self.page.changement_page(self, self.recherche_page_entry.get()))
         self.recherche_page_ok.grid(row=0, column=5)
-
-    # def change_compteur(self, x):
-    #     self.profondeur += x
-    #     self.compteur.configure(text=self.profondeur)
 
     def affichage_page(self, page):
         self.co += 1

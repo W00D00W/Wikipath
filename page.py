@@ -31,11 +31,8 @@ class page:
         self.page_sauvegarde = page
         return noeud(page.title, voisins)
 
-    def regeneration_page(self, it, n=0):
-        it.canvas.delete('graphe')
-        if n == 0: n = 48
-        self.page_courante = self.recuperation_page(self.wiki.page(self.page_courante.val), n)
-        it.graphe.graphe(it, self.page_courante)
+    def regeneration_page(self):
+        self.page_courante = self.recuperation_page(self.wiki.page(self.page_courante.val))
 
     def changement_page(self,it,  v):
         it.canvas.delete('graphe')
@@ -109,6 +106,6 @@ class graphe:
                         obj.voisins[-1].x = obj.x + lst_cercle[i][1] * math.cos(lst_angle[0]*math.pi / 180)
                         obj.voisins[-1].y = obj.y + lst_cercle[i][1] * math.sin(lst_angle.pop(0)*math.pi / 180)
 
-        it.affichage_page(obj)
+        it.zone_droite.affichage_page(obj)
         self.pile.affiche_pile(obj)
         obj.affichage_noeud(it, obj)
