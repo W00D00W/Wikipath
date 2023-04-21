@@ -99,15 +99,19 @@ def verif(id, mdp):
 
 #insérer dans la table "capture"
 def insert_capture(noeud, id_user):
-    """param: noeud nom du lien STR, id_user STR"""
-    requete = """
-    INSERT INTO capture
-    VALUES (
-    ?,
-    ?
-    );
-    """
-    curseur.execute(requete, (id_user, noeud))
+    re =  """SELECT * FROM capture WHERE id_user = ? AND nom_noeud = ?;"""
+    curseur.execute(re, (id_user, noeud))
+    if curseur.fetchall() == 0:
+        """param: noeud nom du lien STR, id_user STR"""
+        requete = """
+        INSERT INTO capture
+        VALUES (
+        ?,
+        ?
+        );
+        """
+        curseur.execute(requete, (id_user, noeud))
+
 
 
 #appel la fonction d'insertion

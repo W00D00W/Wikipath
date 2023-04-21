@@ -94,7 +94,12 @@ class menu:
         affiche tout les items présents dans la classe
         """
         [self.elements['barre_menu'].columnconfigure(i, weight=1) for i in range(3)]
-        
+
+        ### config user
+        self.elements['bouton_connexion'].configure(text='se connecter')
+        if self.parent.utilisateur != '':
+            self.elements['bouton_connexion'].configure(text=self.parent.utilisateur)
+
         self.elements['barre_menu'].grid(row=0, column=0, columnspan=4)
         self.elements['barre_menu'].grid_propagate(False)
         self.elements['bouton_connexion'].grid(row=0, column=0, sticky='W', padx=10)
@@ -105,7 +110,7 @@ class menu:
         self.elements['recherche_valide'].grid(row=0, column=5)
 
     def taille(self):
-        self.elements['barre_menu'].configure(width=self.parent.largeur/self.parent.echelle, height=30)
+        self.elements['barre_menu'].configure(width=self.parent.largeur/self.parent.echelle, height=38/self.parent.echelle)
         self.tk.update()
 
 class zone_droite:
@@ -113,13 +118,14 @@ class zone_droite:
     zone de texte a droite du canvas sur la page principale
     """
     def __init__(self, obj):
+        self.longeur_boite_texte = 0
         self.parent = obj
         self.tk = obj.tk
-        self.elements = {'zone_droite' : Frame(self.tk, bg='#bebfc2')}
+        self.elements = {'zone_droite' : customtkinter.CTkFrame(self.tk)}
         self.elements = {**self.elements, **{'bouton_favori' : customtkinter.CTkButton(self.elements['zone_droite'], text ='', image=customtkinter.CTkImage(Image.open("image/coeur_vide.png")), width=20, height=20),
-                                        'texte': [customtkinter.CTkLabel(self.elements['zone_droite'], text = '', text_color='black'), 
+                                        'texte': [customtkinter.CTkLabel(self.elements['zone_droite'], text = '', text_color='white'), 
                                                 Label(self.elements['zone_droite'], bg='#bebfc2', bd=0, highlightbackground='#bebfc2'),
-                                                customtkinter.CTkTextbox(self.elements['zone_droite'], fg_color='transparent', text_color='black'),
+                                                customtkinter.CTkTextbox(self.elements['zone_droite'], fg_color='transparent', text_color='white'),
                                                 customtkinter.CTkButton(self.elements['zone_droite'], text = 'Aller a la page'),
                                                 customtkinter.CTkButton(self.elements['zone_droite'], text='recharger les liens')]}}
     def affiche(self):
@@ -132,22 +138,32 @@ class zone_droite:
         [self.elements['zone_droite'].columnconfigure(i, weight=1) for i in range(2)]
         self.elements['zone_droite'].grid_propagate(False)
 
-        self.elements['bouton_favori'].grid(row=0, column=1, padx=20)
-
-        self.elements['texte'][0].grid(row=0, column=0, columnspan=1, pady=10, sticky='snew')
+        if self.parent.parent.utilisateur != '':
+            self.elements['bouton_favori'].grid(row=0, column=1, padx=20)
+            self.elements['texte'][0].grid(row=0, column=0, columnspan=1, pady=10, sticky='snew')
+        else:
+            self.elements['texte'][0].grid(row=0, column=0, columnspan=2, pady=10, sticky='snew')
+            
         self.elements['texte'][1].grid(row=1, column=0, columnspan=2)
         self.elements['texte'][2].grid(row=2, column=0, columnspan=2)
         self.elements['texte'][3].grid(row=3, column=0, columnspan=2, pady=10, sticky='S')
         self.elements['texte'][4].grid(row=4, column=0, columnspan=2, pady=10)
         
+    def bouton_favoris(self, titre):
+        self.elements['bouton_favori'].configure(image = customtkinter.CTkImage(Image.open("image/coeur_plein.png")))
+        insert_capture(titre, self.parent.parent.utilisateur)
 
     def affichage_page(self, page_objet):
         page = self.parent.page.wiki.page(page_objet.val)
-        sum = page.summary
-
+        self.texte = page.summary
         titre = page.title
 
-        
+        if self.parent.parent.utilisateur != '':
+            if titre in chercher_captures(self.parent.parent.utilisateur):
+                self.elements['bouton_favori'].configure(command = lambda : self.bouton_favoris(titre), image=customtkinter.CTkImage(Image.open("image/coeur_plein.png")))
+            else:
+                self.elements['bouton_favori'].configure(command = lambda : self.bouton_favoris(titre), image = customtkinter.CTkImage(Image.open("image/coeur_vide.png")))
+
         self.elements['texte'][0].configure(text= titre)
         self.elements['image_wiki'] = recuperation_image(page.title)
 
@@ -158,12 +174,30 @@ class zone_droite:
 
         ## configuration des éléments
         ## texte résumé de wikipédia
-        self.elements['texte'][2].configure(state='normal')
-        self.elements['texte'][2].delete(0.0, END)
-        self.elements['texte'][2].insert("0.0", sum)
-        self.elements['texte'][2].configure(state='disabled')
+        
         ## bouton changement de page
         self.elements['texte'][3].configure(command= lambda : webbrowser.open_new(page.fullurl))
+
+    def formatage_texte(self):
+        longeur = self.elements['texte'][2].winfo_width() // 9
+        if self.elements['texte'][2].get('1.0', '1.end').split(' ')[1:6] != self.texte.split(' ')[:5] or longeur != self.longeur_boite_texte:
+            self.longeur_boite_texte = longeur
+            texte = self.texte.split(' ')
+            cpt = 0
+            chaine = ''
+            while texte != []:
+                if cpt+len(texte[0]) < longeur:
+                    cpt += len(str(texte[0]))
+                    chaine += ' '+str(texte.pop(0))
+                elif cpt == 0 and len(texte[0]) > longeur:
+                    chaine += str(texte.pop(0))
+                else:
+                    cpt = 0
+                    chaine += '\n'
+            self.elements['texte'][2].configure(state='normal')
+            self.elements['texte'][2].delete(0.0, END)
+            self.elements['texte'][2].insert("0.0", chaine)
+            self.elements['texte'][2].configure(state='disabled')
 
 class interface(page_tkinter):
     """
@@ -207,13 +241,15 @@ class interface(page_tkinter):
         ### zone droite
         hauteur_canvas = self.canvas.winfo_height()
 
-        self.zone_droite.elements['zone_droite'].configure(width=(self.parent.largeur/4)*95/100, height=hauteur_canvas)
+        self.zone_droite.elements['zone_droite'].configure(width=((self.parent.largeur/4)/self.parent.echelle)*95/100, height=hauteur_canvas/self.parent.echelle*98/100)
         self.tk.update()
 
         largeur_frame = self.zone_droite.elements['zone_droite'].winfo_width()
 
         self.zone_droite.elements['texte'][2].configure(width=largeur_frame-largeur_frame/4, height= hauteur_canvas/2.5)
         self.tk.update()
+
+        self.zone_droite.formatage_texte()
 
     def affichage_bouton(self, values):
         """
@@ -321,15 +357,18 @@ class interface(page_tkinter):
             element.actualisation(self)
 
 class page_conn(page_tkinter):
+    """
+    page de gestion de compte : lorsque utilisateur connecté
+    """
     def __init__(self, objet):
         super().__init__(objet)
-
-        self.title_label = customtkinter.CTkLabel(self.tk, text="Espace membre : bienvenue ")
+        
+        self.bienvenue = customtkinter.CTkLabel(self.tk)
         
 
         text = "Vous n'avez aucune page en favori"
-        # if len(chercher_captures(self.parent.utilisateur)) > 0:
-        #     text = "Pages en favori"
+        if len(chercher_captures(self.parent.utilisateur)) > 0:
+            text = "Pages en favori"
         self.recherche_page = customtkinter.CTkLabel(self.tk, text=text)
         
         # if len(chercher_captures(self.user)) > 0:
@@ -344,13 +383,18 @@ class page_conn(page_tkinter):
         #         cpt += 1
 
     def affichage(self):
-        self.title_label.grid(row=1, column=0, padx=30, pady=15)
+        self.bienvenue.configure(text=f"Espace membre : bienvenue {self.parent.utilisateur}")
+
+        self.bienvenue.grid(row=1, column=0, padx=30, pady=15)
         self.recherche_page.grid(row=2, column=0, padx=0, pady=50)
     
     def taille(self):
         pass
 
 class conn(page_tkinter):
+    """
+    page de connexion
+    """
     def __init__(self, objet):
         super().__init__(objet)
 
@@ -370,11 +414,11 @@ class conn(page_tkinter):
         self.button_frame = customtkinter.CTkFrame(self.tk)
 
         # Création des boutons de connexion / inscription / mdp oublié
-        self.login_button = customtkinter.CTkButton(self.button_frame, text="Se connecter", command=lambda : self.connexion(self.id_entry.get(), self.mdp_entry.get(), obj))
+        self.login_button = customtkinter.CTkButton(self.button_frame, text="Se connecter", command=lambda : self.connexion(self.id_entry.get(), self.mdp_entry.get()))
         
-        self.signup_button = customtkinter.CTkButton(self.button_frame, text="S'inscrire", command=lambda : self.inscription(self.id_entry.get(), self.mdp_entry.get(), obj))
+        self.signup_button = customtkinter.CTkButton(self.button_frame, text="S'inscrire", command=lambda : self.inscription(self.id_entry.get(), self.mdp_entry.get()))
         
-        self.oublie_button = customtkinter.CTkButton(self.button_frame, text="Mdp oublié ?", command=lambda : oubl(self.id_entry.get(), obj))
+        self.oublie_button = customtkinter.CTkButton(self.button_frame, text="Mdp oublié ?", command=lambda : None)
         
     def affichage(self):
         self.title_label.grid(row=1, column=0, pady=10, columnspan=4)
@@ -388,13 +432,15 @@ class conn(page_tkinter):
         self.signup_button.pack(side="left", padx=10, pady=20)
         self.oublie_button.pack(side="left", padx=10, pady=20)
 
-    # def connexion(self, id, mdp, obj):
-    #     if verif(id, mdp):
-    #         obj.temp = page_conn(obj, id)
+    def connexion(self, id, mdp):
+        if verif(id, mdp):
+            self.parent.utilisateur = str(id)
+            self.parent.changement_page('page_compte')
     
-    # def inscription(self, id, mdp, obj):
-    #     if sign_up(id, mdp):
-    #         obj.temp = page_conn(obj, id)
+    def inscription(self, id, mdp):
+        if sign_up(id, mdp):
+            self.parent.utilisateur = str(id)
+            self.parent.changement_page('page_compte')
 
     
 page_actuelle = gestion_page()
