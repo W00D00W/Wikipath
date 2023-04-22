@@ -86,6 +86,9 @@ def verif(id, mdp):
         else:
             return True
 
+def chemin_avatar(utilisateur):
+    curseur.execute("SELECT avatar FROM user WHERE id = ?", (utilisateur, ))
+
 #insérer dans la table "capture"
 def insert_capture(noeud, id_user):
     re =  """SELECT * FROM capture WHERE id_user = ? AND nom_noeud = ?;"""
@@ -123,13 +126,6 @@ def chercher_captures(id_user):
     return curseur.fetchall()
 
 
-def close_database_connection():
-    bdd.commit()
-    bdd.close()
-    print("Database connection closed.")
-
-atexit.register(close_database_connection)
-
 
 if __name__ == '__main__':
     requete = """
@@ -140,6 +136,7 @@ if __name__ == '__main__':
     CREATE TABLE user (
     id STRING PRIMARY KEY,
     mdp STRING
+    avatar STRING
     );
     """
     curseur.execute(requete)
