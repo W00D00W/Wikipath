@@ -400,6 +400,7 @@ class page_conn(page_tkinter):
         self.recherche_page = customtkinter.CTkLabel(self.zone_gauche, text=text)
         self.image_avatar = None
         self.description = customtkinter.CTkLabel(self.zone_droite, text='votre avatar sur wikipath')
+        self.scrollable_frame = None
 
     def affichage(self):
         ### zone gauche 
@@ -414,14 +415,15 @@ class page_conn(page_tkinter):
 
         if len(chercher_captures(self.parent.utilisateur)) > 0:
             self.recherche_page.grid_forget()
-            scrollable_frame = customtkinter.CTkScrollableFrame(self.zone_gauche, label_text="vos page en favoris")
-            scrollable_frame.grid(row=2, column=0, padx=(20, 0), pady=(20, 0), sticky="nsew")
+            self.scrollable_frame = customtkinter.CTkScrollableFrame(self.zone_gauche, label_text="vos page en favoris")
+            self.scrollable_frame.grid(row=2, column=0, padx=(20, 0), pady=(20, 0), sticky="nsew")
+            self.scrollable_frame.grid_columnconfigure(0, weight=1)
             scrollable_frame_switches = []
             cpt = 2
             nom_page = []
             for element in chercher_captures(self.parent.utilisateur):
                 nom_page.append(element)
-                switch = customtkinter.CTkButton(master=scrollable_frame, text=element, command= lambda el = element: self.load(el))
+                switch = customtkinter.CTkButton(master=self.scrollable_frame, text=element, command= lambda el = element: self.load(el))
                 switch.grid(row=cpt, column=0, padx=10, pady=(0, 20))
                 scrollable_frame_switches.append(switch)
                 cpt += 1
@@ -449,6 +451,10 @@ class page_conn(page_tkinter):
         self.tk.rowconfigure(1, weight=1)
         self.tk.rowconfigure(2, weight=0)
         self.tk.rowconfigure(3, weight=0)
+
+        if self.scrollable_frame != None:
+            self.scrollable_frame.configure(width= self.parent.largeur/4*2/self.parent.echelle-150, height=self.parent.hauteur/self.parent.echelle-300)
+        
         
         if self.image_avatar != None:
             largeur = int(round(self.parent.hauteur//1.5 * self.image_avatar.winfo_width() / self.image_avatar.winfo_height()))
@@ -456,6 +462,8 @@ class page_conn(page_tkinter):
             self.image_finale = ImageTk.PhotoImage(self.avatar_chemin)
             self.image_avatar.configure(height=self.parent.hauteur//1.5, width=largeur, image=self.image_finale)
             self.image_avatar.update()
+
+            
 
     def load(self, page):
         self.parent.page_dico['page_interface'].gen_page(page[0])
