@@ -88,6 +88,7 @@ def verif(id, mdp):
 
 def chemin_avatar(utilisateur):
     curseur.execute("SELECT avatar FROM user WHERE id = ?", (utilisateur, ))
+    return curseur.fetchone()[0]
 
 #insérer dans la table "capture"
 def insert_capture(noeud, id_user):
