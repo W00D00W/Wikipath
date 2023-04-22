@@ -10,6 +10,8 @@ import win32api
 
 from PySide6 import QtGui
 
+import copy
+
 
 class gestion_page:
     """
@@ -89,7 +91,7 @@ class menu:
         self.elements = {**self.elements,**{
                          'valeurs':          customtkinter.CTkSegmentedButton(self.elements['recherche'], values=['prédefinie', 'rechercher'], command= lambda e: self.parent.page_dico['page_interface'].affichage_bouton(e)),
                          'valeurs_entre':    customtkinter.CTkEntry(self.elements['recherche']),
-                         'recherche_valide': customtkinter.CTkButton(self.elements['recherche'], text='ok', width = 20)}}
+                         'recherche_valide': customtkinter.CTkButton(self.elements['recherche'], text='ok', width = 20, command=lambda: self.change_page())}}
 
     def affiche(self):
         """
@@ -110,6 +112,11 @@ class menu:
         self.elements['valeurs'].grid(row=0, column=0)
         self.elements['valeurs_entre'].grid(row=0, column=1)
         self.elements['recherche_valide'].grid(row=0, column=5)
+
+    def change_page(self):
+        if self.elements['valeurs_entre'].get() != '':
+            self.parent.page_dico['page_interface'].gen_page(self.elements['valeurs_entre'].get()) 
+            self.parent.changement_page('page_interface')
 
     def taille(self):
         self.elements['barre_menu'].configure(width=self.parent.largeur/self.parent.echelle, height=38/self.parent.echelle)
@@ -240,7 +247,6 @@ class interface(page_tkinter):
         self.zone_droite.affiche()
         self.graphe.graphe(self, self.page.page_courante)
         
-
     def taille(self):
         hauteur_barre_menu = self.parent.menu.elements['barre_menu'].winfo_height()
 
@@ -289,6 +295,12 @@ class interface(page_tkinter):
                             bulle('Catégorie: politique'), bulle('Catégorie: culture pop'), bulle('Catégorie: philosophie'), bulle('Catégorie: mathématiques'),
                             bulle('Catégorie: Informatique'), bulle('Catégorie: nature'), bulle('Catégorie: sport')])
 
+    def gen_page(self, page):
+        self.canvas.delete('all')
+        self.graphe.pile.vider_pile()
+        self.page.page_courante = self.page.recuperation_page(page)
+
+
     ### actions
     def actu_fenetre(self, event):
         """
@@ -324,12 +336,15 @@ class interface(page_tkinter):
                     self.page.page_courante = v
                     self.graphe.graphe(self, v)
                 else:
-                    self.canvas.delete('graphe')
-                    self.graphe.pile.ajout_pile(self.page.page_courante)
-                    self.graphe.pile.deplacer_centre(v.x, v.y)
-                    self.page.page_courante = self.page.recuperation_page(v.val)
-                    self.graphe.graphe(self, self.page.page_courante)
+                    self.change_page(v.x, v.y, v.val)
                 break
+    
+    def change_page(self, x, y, val):
+        self.canvas.delete('graphe')
+        self.graphe.pile.ajout_pile(self.page.page_courante)
+        self.graphe.pile.deplacer_centre(x, y)
+        self.page.page_courante = self.page.recuperation_page(val)
+        self.graphe.graphe(self, self.page.page_courante)
 
     def item_bouge(self, event):
         """
@@ -403,8 +418,10 @@ class page_conn(page_tkinter):
             scrollable_frame.grid(row=2, column=0, padx=(20, 0), pady=(20, 0), sticky="nsew")
             scrollable_frame_switches = []
             cpt = 2
+            nom_page = []
             for element in chercher_captures(self.parent.utilisateur):
-                switch = customtkinter.CTkButton(master=scrollable_frame, text=element)
+                nom_page.append(element)
+                switch = customtkinter.CTkButton(master=scrollable_frame, text=element, command= lambda el = element: self.load(el))
                 switch.grid(row=cpt, column=0, padx=10, pady=(0, 20))
                 scrollable_frame_switches.append(switch)
                 cpt += 1
@@ -435,11 +452,14 @@ class page_conn(page_tkinter):
         
         if self.image_avatar != None:
             largeur = int(round(self.parent.hauteur//1.5 * self.image_avatar.winfo_width() / self.image_avatar.winfo_height()))
-            self.avatar_chemin = self.avatar_chemin.resize((largeur, int(self.parent.hauteur//1.5)))
+            self.avatar_chemin = self.avatar_chemin.resize((largeur, int(self.parent.hauteur//1.5)), resample=Image.Resampling.LANCZOS)
             self.image_finale = ImageTk.PhotoImage(self.avatar_chemin)
             self.image_avatar.configure(height=self.parent.hauteur//1.5, width=largeur, image=self.image_finale)
             self.image_avatar.update()
 
+    def load(self, page):
+        self.parent.page_dico['page_interface'].gen_page(page[0])
+        self.parent.changement_page('page_interface')
 
 class conn(page_tkinter):
     """

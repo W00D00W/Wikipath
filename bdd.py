@@ -79,8 +79,6 @@ def verif(id, mdp):
         """
         curseur.execute(requete, (id, mdp))
         b = curseur.fetchall()
-        print(b)
-        print("rr")
         if b == []:
             erreur("Ce n'est pas le bon mot de passe.")
         else:
@@ -105,9 +103,6 @@ def insert_capture(noeud, id_user):
         """
         curseur.execute(requete, (id_user, noeud))
         bdd.commit()
-        print('ok')
-
-
 
 
 #appel la fonction d'insertion
