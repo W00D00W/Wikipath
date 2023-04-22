@@ -5,21 +5,21 @@ from tkinter import messagebox
 
 
 
-bdd = sqlite3.connect("bdd_user.db")
+bdd = sqlite3.connect("base_de_donne")
 curseur = bdd.cursor()
 
 def erreur(text_erreur):
     """
     prends le texte de l'erreur en param
     affiche une erreur avec le texte passé en param
-    ne return rien
+    ne renvoie rien
     """
     messagebox.showerror("Erreur", text_erreur)
 
 
 
 #fonction pour qu'un client S'inscrive au site 
-def sign_up(id, mdp):
+def sign_up(id, mdp, avatar):
     
     autorisation = True
 
@@ -30,24 +30,14 @@ def sign_up(id, mdp):
         erreur("Veuillez renter au moins 8 carractères pour votre mdp")
         autorisation = False
 
-    requete = """
-    SELECT *
-    FROM user
-    WHERE id = ?;
-    """
-    curseur.execute(requete, (id,))
-    a = curseur.fetchall()
-
-    if a != []:
+    curseur.execute(""" SELECT * FROM user WHERE id = ?; """, (id,))
+    if curseur.fetchall() != []:
         erreur("Il y a déjà un utilisateur enregistré avec ce nom, essayez de vous connecter")
         autorisation = False
 
     if autorisation != False:
-        requete = """
-    INSERT INTO user
-    VALUES ("%s", "%s");
-    """ % (id, mdp)
-        curseur.execute(requete)
+        curseur.execute(""" INSERT INTO user VALUES ("%s", "%s", "%s"); """ % (id, mdp, avatar))
+        bdd.commit()
     return autorisation
 
 #Fonction mdp oublié
@@ -60,12 +50,7 @@ def mdpoublie(id, nouv_mdp, conf_mdp):
         autorise = False
 
     if autorise:
-        requete = """
-        UPDATE user
-        SET mdp = ?
-        WHERE id = ?;
-        """
-        curseur.execute(requete, (nouv_mdp, id))
+        curseur.execute(""" UPDATE user SET mdp = ? WHERE id = ?;""", (nouv_mdp, id))
 
 #vérification des informations lors d'une connection d'un utilisateur
 def verif(id, mdp):
@@ -101,7 +86,7 @@ def verif(id, mdp):
 def insert_capture(noeud, id_user):
     re =  """SELECT * FROM capture WHERE id_user = ? AND nom_noeud = ?;"""
     curseur.execute(re, (id_user, noeud))
-    if curseur.fetchall() == 0:
+    if len(curseur.fetchall()) == 0:
         """param: noeud nom du lien STR, id_user STR"""
         requete = """
         INSERT INTO capture
@@ -111,6 +96,9 @@ def insert_capture(noeud, id_user):
         );
         """
         curseur.execute(requete, (id_user, noeud))
+        bdd.commit()
+        print('ok')
+
 
 
 
@@ -131,6 +119,9 @@ def chercher_captures(id_user):
     return curseur.fetchall()
 
 
+def chemin_avatar(utilisateur):
+    curseur.execute('''SELECT avatar FROM user WHERE id = ?''', (utilisateur,))
+    return curseur.fetchone()[0]
 
 if __name__ == '__main__':
     requete = """
@@ -140,7 +131,8 @@ if __name__ == '__main__':
     requete = """
     CREATE TABLE user (
     id SRING PRIMARY KEY,
-    mdp STRING
+    mdp STRING, 
+    avatar STRING
     );
     """
     curseur.execute(requete)

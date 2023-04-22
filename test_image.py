@@ -7,10 +7,8 @@ from io import BytesIO
 root = tk.Tk()
 
 
-def afficher_image(url_choix):
+def afficher_image(url):
     try:
-        url = entry_url.get()
-        
         # Ouvrir l'URL et charger l'image
         with urllib.request.urlopen(url) as u:
             image_data = u.read()

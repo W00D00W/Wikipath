@@ -47,6 +47,8 @@ class gestion_page:
         self.page_actuelle.taille()
         
     def changement_page(self, page):
+        [self.tk.rowconfigure(i, weight=0) for i in range(10)]
+
         self.page_actuelle.efface()
         self.menu.affiche()
         self.page_actuelle = self.page_dico[page]
@@ -204,11 +206,8 @@ class zone_droite:
     def taille(self):
         self.elements['texte'][0].configure(height=30)
         hauteur = self.elements['zone_droite'].winfo_height() - round(self.elements['texte'][1].winfo_height()) - round(self.elements['texte'][3].winfo_height()) - round(self.elements['texte'][4].winfo_height()) - round(self.elements['texte'][0].winfo_height()) - 100
-        print(self.elements['texte'][2].winfo_height())
-        print('------------------------')
         if hauteur > self.elements['texte'][2].winfo_height()+10 or hauteur < self.elements['texte'][2].winfo_height()-10:
-            self.elements['texte'][2].configure(height=round(hauteur/self.parent.parent.echelle))
-        
+            self.elements['texte'][2].configure(height=round(hauteur/self.parent.parent.echelle))      
 
 class interface(page_tkinter):
     """
@@ -374,34 +373,73 @@ class page_conn(page_tkinter):
     """
     def __init__(self, objet):
         super().__init__(objet)
+
+        self.zone_gauche = customtkinter.CTkFrame(self.tk)
+        self.zone_droite = customtkinter.CTkFrame(self.tk)
         
-        self.bienvenue = customtkinter.CTkLabel(self.tk)
-        
+        self.bienvenue = customtkinter.CTkLabel(self.zone_gauche)
 
         text = "Vous n'avez aucune page en favori"
         if len(chercher_captures(self.parent.utilisateur)) > 0:
             text = "Pages en favori"
-        self.recherche_page = customtkinter.CTkLabel(self.tk, text=text)
-        
-        # if len(chercher_captures(self.user)) > 0:
-        #     scrollable_frame = customtkinter.CTkScrollableFrame(self.tk, label_text="CTkScrollableFrame")
-        #     scrollable_frame.grid(row=2, column=0, padx=(20, 0), pady=(20, 0), sticky="nsew")
-        #     scrollable_frame_switches = []
-        #     cpt = 2
-        #     for element in chercher_captures(self.user):
-        #         switch = customtkinter.CTkButton(master=scrollable_frame, text=element)
-        #         switch.grid(row=cpt, column=0, padx=10, pady=(0, 20))
-        #         scrollable_frame_switches.append(switch)
-        #         cpt += 1
+        self.recherche_page = customtkinter.CTkLabel(self.zone_gauche, text=text)
+        self.image_avatar = None
+        self.description = customtkinter.CTkLabel(self.zone_droite, text='votre avatar sur wikipath')
 
     def affichage(self):
+        ### zone gauche 
         self.bienvenue.configure(text=f"Espace membre : bienvenue {self.parent.utilisateur}")
+        
+        self.zone_gauche.grid(row=1, column=0)
+        self.bienvenue.grid(row=0, column=0, padx=30, pady=15)
+        self.recherche_page.grid(row=1, column=0, padx=0, pady=50)
 
-        self.bienvenue.grid(row=1, column=0, padx=30, pady=15)
-        self.recherche_page.grid(row=2, column=0, padx=0, pady=50)
-    
+        self.zone_droite.columnconfigure(0, weight=1)
+        [self.zone_droite.rowconfigure(i, weight=1) for i in range(2)]
+
+        if len(chercher_captures(self.parent.utilisateur)) > 0:
+            self.recherche_page.grid_forget()
+            scrollable_frame = customtkinter.CTkScrollableFrame(self.zone_gauche, label_text="vos page en favoris")
+            scrollable_frame.grid(row=2, column=0, padx=(20, 0), pady=(20, 0), sticky="nsew")
+            scrollable_frame_switches = []
+            cpt = 2
+            for element in chercher_captures(self.parent.utilisateur):
+                switch = customtkinter.CTkButton(master=scrollable_frame, text=element)
+                switch.grid(row=cpt, column=0, padx=10, pady=(0, 20))
+                scrollable_frame_switches.append(switch)
+                cpt += 1
+
+        ### zone droite
+        self.zone_droite.grid(row=1, column=1)
+        ## creation de l'image
+        if self.image_avatar == None:
+            self.avatar_chemin = Image.open(chemin_avatar(self.parent.utilisateur))
+            self.image_finale = ImageTk.PhotoImage(self.avatar_chemin)
+            self.image_avatar = Label(self.zone_droite, image=self.image_finale)     
+
+        self.image_avatar.grid(row=0, rowspan=1, column=0, columnspan=1)
+        self.description.grid(row=1, column=0)
+
     def taille(self):
-        pass
+        self.zone_gauche.grid_propagate(False)
+        self.zone_droite.grid_propagate(False)
+
+        self.zone_gauche.configure(width=self.parent.largeur/4*2/self.parent.echelle-100, height=self.parent.hauteur/self.parent.echelle-100)
+
+        self.zone_droite.configure(width=((self.parent.largeur/4)*2)/self.parent.echelle-100, height=self.parent.hauteur/self.parent.echelle-100)
+
+        self.tk.rowconfigure(0, weight=1)
+        self.tk.rowconfigure(1, weight=1)
+        self.tk.rowconfigure(2, weight=0)
+        self.tk.rowconfigure(3, weight=0)
+        
+        if self.image_avatar != None:
+            largeur = int(round(self.parent.hauteur//1.5 * self.image_avatar.winfo_width() / self.image_avatar.winfo_height()))
+            self.avatar_chemin = self.avatar_chemin.resize((largeur, int(self.parent.hauteur//1.5)))
+            self.image_finale = ImageTk.PhotoImage(self.avatar_chemin)
+            self.image_avatar.configure(height=self.parent.hauteur//1.5, width=largeur, image=self.image_finale)
+            self.image_avatar.update()
+
 
 class conn(page_tkinter):
     """
@@ -450,9 +488,10 @@ class conn(page_tkinter):
             self.parent.changement_page('page_compte')
     
     def inscription(self, id, mdp):
-        if sign_up(id, mdp):
+        if sign_up(id, mdp, str('avatar/'+str(random.randint(1, 20))+'.jpg')):
             self.parent.utilisateur = str(id)
             self.parent.changement_page('page_compte')
+            
 
     
 page_actuelle = gestion_page()
