@@ -2,6 +2,8 @@
 import sqlite3
 import tkinter as tk
 from tkinter import messagebox
+import atexit
+
 
 
 
@@ -39,6 +41,8 @@ def sign_up(id, mdp, avatar):
         curseur.execute(""" INSERT INTO user VALUES ("%s", "%s", "%s"); """ % (id, mdp, avatar))
         bdd.commit()
     return autorisation
+
+    
 
 #Fonction mdp oublié
 def mdpoublie(id, nouv_mdp, conf_mdp):
@@ -119,9 +123,13 @@ def chercher_captures(id_user):
     return curseur.fetchall()
 
 
-def chemin_avatar(utilisateur):
-    curseur.execute('''SELECT avatar FROM user WHERE id = ?''', (utilisateur,))
-    return curseur.fetchone()[0]
+def close_database_connection():
+    bdd.commit()
+    bdd.close()
+    print("Database connection closed.")
+
+atexit.register(close_database_connection)
+
 
 if __name__ == '__main__':
     requete = """
@@ -130,9 +138,8 @@ if __name__ == '__main__':
     curseur.execute(requete)
     requete = """
     CREATE TABLE user (
-    id SRING PRIMARY KEY,
-    mdp STRING, 
-    avatar STRING
+    id STRING PRIMARY KEY,
+    mdp STRING
     );
     """
     curseur.execute(requete)
@@ -148,3 +155,6 @@ if __name__ == '__main__':
     PRIMARY KEY (id_user, nom_noeud));
     """
     curseur.execute(requete)
+
+
+    
