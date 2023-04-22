@@ -128,6 +128,7 @@ class zone_droite:
                                                 customtkinter.CTkTextbox(self.elements['zone_droite'], fg_color='transparent', text_color='white'),
                                                 customtkinter.CTkButton(self.elements['zone_droite'], text = 'Aller a la page'),
                                                 customtkinter.CTkButton(self.elements['zone_droite'], text='recharger les liens')]}}
+        
     def affiche(self):
         """
         affiche tout les elements contenus dans le dictionnaire elements
@@ -143,9 +144,10 @@ class zone_droite:
             self.elements['texte'][0].grid(row=0, column=0, columnspan=1, pady=10, sticky='snew')
         else:
             self.elements['texte'][0].grid(row=0, column=0, columnspan=2, pady=10, sticky='snew')
-            
+        
         self.elements['texte'][1].grid(row=1, column=0, columnspan=2)
         self.elements['texte'][2].grid(row=2, column=0, columnspan=2)
+
         self.elements['texte'][3].grid(row=3, column=0, columnspan=2, pady=10, sticky='S')
         self.elements['texte'][4].grid(row=4, column=0, columnspan=2, pady=10)
         
@@ -168,12 +170,12 @@ class zone_droite:
         self.elements['image_wiki'] = recuperation_image(page.title)
 
         self.image = recuperation_image(self.parent.page.page_courante.val)
-        # self.image_m = configuration_image(self, self.image)
 
         self.elements['texte'][1].config(image=self.image)
-
-        ## configuration des éléments
-        ## texte résumé de wikipédia
+        if self.image == None:
+            self.elements['texte'][1].grid_forget()
+        else:
+            self.elements['texte'][1].grid(row=1, column=0, columnspan=2)
         
         ## bouton changement de page
         self.elements['texte'][3].configure(command= lambda : webbrowser.open_new(page.fullurl))
@@ -198,6 +200,15 @@ class zone_droite:
             self.elements['texte'][2].delete(0.0, END)
             self.elements['texte'][2].insert("0.0", chaine)
             self.elements['texte'][2].configure(state='disabled')
+    
+    def taille(self):
+        self.elements['texte'][0].configure(height=30)
+        hauteur = self.elements['zone_droite'].winfo_height() - round(self.elements['texte'][1].winfo_height()) - round(self.elements['texte'][3].winfo_height()) - round(self.elements['texte'][4].winfo_height()) - round(self.elements['texte'][0].winfo_height()) - 100
+        print(self.elements['texte'][2].winfo_height())
+        print('------------------------')
+        if hauteur > self.elements['texte'][2].winfo_height()+10 or hauteur < self.elements['texte'][2].winfo_height()-10:
+            self.elements['texte'][2].configure(height=round(hauteur/self.parent.parent.echelle))
+        
 
 class interface(page_tkinter):
     """
@@ -246,10 +257,11 @@ class interface(page_tkinter):
 
         largeur_frame = self.zone_droite.elements['zone_droite'].winfo_width()
 
-        self.zone_droite.elements['texte'][2].configure(width=largeur_frame-largeur_frame/4, height= hauteur_canvas/2.5)
+        self.zone_droite.elements['texte'][2].configure(width=largeur_frame-largeur_frame/4)
         self.tk.update()
 
         self.zone_droite.formatage_texte()
+        self.zone_droite.taille()
 
     def affichage_bouton(self, values):
         """
