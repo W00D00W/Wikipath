@@ -2,6 +2,8 @@
 import sqlite3
 import tkinter as tk
 from tkinter import messagebox
+import atexit
+
 
 
 
@@ -49,6 +51,8 @@ def sign_up(id, mdp):
     """ % (id, mdp)
         curseur.execute(requete)
     return autorisation
+
+    
 
 #Fonction mdp oublié
 def mdpoublie(id, nouv_mdp, conf_mdp):
@@ -99,19 +103,15 @@ def verif(id, mdp):
 
 #insérer dans la table "capture"
 def insert_capture(noeud, id_user):
-    re =  """SELECT * FROM capture WHERE id_user = ? AND nom_noeud = ?;"""
-    curseur.execute(re, (id_user, noeud))
-    if curseur.fetchall() == 0:
-        """param: noeud nom du lien STR, id_user STR"""
-        requete = """
-        INSERT INTO capture
-        VALUES (
-        ?,
-        ?
-        );
-        """
-        curseur.execute(requete, (id_user, noeud))
-
+    """param: noeud nom du lien STR, id_user STR"""
+    requete = """
+    INSERT INTO capture
+    VALUES (
+    ?,
+    ?
+    );
+    """
+    curseur.execute(requete, (id_user, noeud))
 
 
 #appel la fonction d'insertion
@@ -131,6 +131,13 @@ def chercher_captures(id_user):
     return curseur.fetchall()
 
 
+def close_database_connection():
+    bdd.commit()
+    bdd.close()
+    print("Database connection closed.")
+
+atexit.register(close_database_connection)
+
 
 if __name__ == '__main__':
     requete = """
@@ -139,7 +146,7 @@ if __name__ == '__main__':
     curseur.execute(requete)
     requete = """
     CREATE TABLE user (
-    id SRING PRIMARY KEY,
+    id STRING PRIMARY KEY,
     mdp STRING
     );
     """
@@ -156,3 +163,6 @@ if __name__ == '__main__':
     PRIMARY KEY (id_user, nom_noeud));
     """
     curseur.execute(requete)
+
+
+    
