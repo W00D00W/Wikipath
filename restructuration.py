@@ -337,15 +337,23 @@ class interface(page_tkinter):
         for v in self.page.page_courante.voisins:
             if x > v.x and x < v.x + v.largeur  and  y > v.y and y < v.y+v.hauteur:    
                 if v.etat == False:
-                    self.canvas.delete('graphe')
+                    self.place_init()
+                    self.canvas.delete('all')
                     v.etat = True
                     self.graphe.pile.retour_arriere(v)
-                    self.page.page_courante = v
+                    # self.change_page(v.x, v.y, v.val)
                     self.graphe.graphe(self, v)
                 else:
+                    self.place_init()
                     self.change_page(v.x, v.y, v.val)
                 break
     
+    def place_init(self):
+        self.page.page_courante.place_initiale(self.canvas)
+        for v in self.page.page_courante.voisins:
+            v.place_initiale(self.canvas)
+            # self.canvas.update()
+
     def change_page(self, x, y, val):
         self.canvas.delete('graphe')
         self.graphe.pile.ajout_pile(self.page.page_courante)
