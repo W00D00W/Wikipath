@@ -91,6 +91,9 @@ class graphe:
         obj : un noeud contenant une page wikipedia ainsi que ses voisins
         """
 
+        obj.x, obj.y = 0, 0
+        
+
         position = [500,480]
         obj.x, obj.y = position[0], position[1]
         lst_angle = [el*(360 / len(obj.voisins)) for el in range(len(obj.voisins))]
@@ -105,7 +108,8 @@ class graphe:
                         obj.voisins.append(lst_cercle[i][0].pop(0))
                         obj.voisins[-1].x = obj.x + lst_cercle[i][1] * math.cos(lst_angle[0]*math.pi / 180)
                         obj.voisins[-1].y = obj.y + lst_cercle[i][1] * math.sin(lst_angle.pop(0)*math.pi / 180)
-
+                        
+        print(obj.x, obj.y)
         it.zone_droite.affichage_page(obj)
         self.pile.affiche_pile(obj)
         obj.affichage_noeud(it, obj)

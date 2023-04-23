@@ -341,10 +341,9 @@ class interface(page_tkinter):
                     self.canvas.delete('all')
                     v.etat = True
                     self.graphe.pile.retour_arriere(v)
-                    # self.change_page(v.x, v.y, v.val)
+                    self.page.page_courante = v
                     self.graphe.graphe(self, v)
                 else:
-                    self.place_init()
                     self.change_page(v.x, v.y, v.val)
                 break
     
@@ -359,6 +358,8 @@ class interface(page_tkinter):
         self.graphe.pile.ajout_pile(self.page.page_courante)
         self.graphe.pile.deplacer_centre(x, y)
         self.page.page_courante = self.page.recuperation_page(val)
+        if self.page.page_courante.val in [v.val for v in self.graphe.pile.pile]:
+            self.graphe.pile.pile[:-2]
         self.graphe.graphe(self, self.page.page_courante)
 
     def item_bouge(self, event):
