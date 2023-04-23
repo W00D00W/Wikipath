@@ -136,7 +136,7 @@ class zone_droite:
                                                 Label(self.elements['zone_droite'], bg='#bebfc2', bd=0, highlightbackground='#bebfc2'),
                                                 customtkinter.CTkTextbox(self.elements['zone_droite'], fg_color='transparent', text_color='white'),
                                                 customtkinter.CTkButton(self.elements['zone_droite'], text = 'Aller a la page'),
-                                                customtkinter.CTkButton(self.elements['zone_droite'], text='recharger les liens')]}}
+                                                customtkinter.CTkButton(self.elements['zone_droite'], text='recharger les liens', command = lambda : self.parent.regenerer_page('page_interface'))]}}
         
     def affiche(self):
         """
@@ -161,8 +161,12 @@ class zone_droite:
         self.elements['texte'][4].grid(row=4, column=0, columnspan=2, pady=10)
         
     def bouton_favoris(self, titre):
-        self.elements['bouton_favori'].configure(image = customtkinter.CTkImage(Image.open("image/coeur_plein.png")))
-        insert_capture(titre, self.parent.parent.utilisateur)
+        if titre in [el[0] for el in chercher_captures(self.parent.parent.utilisateur)]:
+            self.elements['bouton_favori'].configure(image = customtkinter.CTkImage(Image.open("image/coeur_vide.png")))
+            suprimer_capture(titre, self.parent.parent.utilisateur)
+        else:
+            self.elements['bouton_favori'].configure(image = customtkinter.CTkImage(Image.open("image/coeur_plein.png")))
+            insert_capture(titre, self.parent.parent.utilisateur)
 
     def affichage_page(self, page_objet):
         page = self.parent.page.wiki.page(page_objet.val)
@@ -170,7 +174,7 @@ class zone_droite:
         titre = page.title
 
         if self.parent.parent.utilisateur != '':
-            if titre in chercher_captures(self.parent.parent.utilisateur):
+            if titre in [el[0] for el in chercher_captures(self.parent.parent.utilisateur)]:
                 self.elements['bouton_favori'].configure(command = lambda : self.bouton_favoris(titre), image=customtkinter.CTkImage(Image.open("image/coeur_plein.png")))
             else:
                 self.elements['bouton_favori'].configure(command = lambda : self.bouton_favoris(titre), image = customtkinter.CTkImage(Image.open("image/coeur_vide.png")))
@@ -211,7 +215,7 @@ class zone_droite:
             self.elements['texte'][2].configure(state='disabled')
     
     def taille(self):
-        self.elements['texte'][0].configure(height=30)
+        # self.elements['texte'][0].configure(height=30)
         hauteur = self.elements['zone_droite'].winfo_height() - round(self.elements['texte'][1].winfo_height()) - round(self.elements['texte'][3].winfo_height()) - round(self.elements['texte'][4].winfo_height()) - round(self.elements['texte'][0].winfo_height()) - 100
         if hauteur > self.elements['texte'][2].winfo_height()+10 or hauteur < self.elements['texte'][2].winfo_height()-10:
             self.elements['texte'][2].configure(height=round(hauteur/self.parent.parent.echelle))      
@@ -300,6 +304,9 @@ class interface(page_tkinter):
         self.graphe.pile.vider_pile()
         self.page.page_courante = self.page.recuperation_page(page)
 
+    def regenerer_page(self):
+        self.canvas.delete('all')
+        self.parent.changement_page('page_interface')
 
     ### actions
     def actu_fenetre(self, event):

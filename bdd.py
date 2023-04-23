@@ -59,8 +59,6 @@ def mdpoublie(id, nouv_mdp, conf_mdp):
 #vérification des informations lors d'une connection d'un utilisateur
 def verif(id, mdp):
 
-    autorisation = True
-
     requete = """
     SELECT *
     FROM user
@@ -104,6 +102,10 @@ def insert_capture(noeud, id_user):
         curseur.execute(requete, (id_user, noeud))
         bdd.commit()
 
+
+def suprimer_capture(noeud, id_user):
+    curseur.execute('DELETE FROM capture WHERE id_user = ? AND nom_noeud = ?', (id_user, noeud))
+    bdd.commit()
 
 #appel la fonction d'insertion
 def enregistrer_noeud(noeud_obj, id_user ):

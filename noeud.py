@@ -14,6 +14,9 @@ class bulle:
         self.etat = True
         self.passage = 0
 
+        self.x_initial = 0
+        self.y_initial = 0
+
 
 
     def affichage_noeud(self, it, page): ### permet l'affichage du noeud
@@ -45,7 +48,7 @@ class bulle:
             self.affichage = []
         self.affichage.append(it.graphe.create_rounded_rectangle(it.canvas, *bbox, radius=radius, fill=couleur, outline="#4E5058", width=2, tag='graphe'))
         self.affichage.append(it.canvas.create_text(self.x+self.largeur/2, self.y+self.hauteur/2, text=self.val, width=bbox[2]-bbox[0]-2*padding, justify=CENTER, fill="black", tag='graphe'))
-
+        self.x_initial, self.y_initial = self.x, self.y
 
 
     def ajout_lien(self, it, obj): ### rajoute le tracé du lien dans la variable qui stocke l'affichage
@@ -56,7 +59,8 @@ class bulle:
                 obj = obj.voisins[obj.voisins.index(self)+1]
         self.affichage.append(it.canvas.create_line(obj.x+obj.largeur/2, obj.y+obj.hauteur/2, self.x+self.largeur/2, self.y+self.hauteur/2, fill=couleur, tag='graphe', width=1.5))
 
-
+    def place_initiale(self):
+        self.x, self.y = self.x_initial, self.y_initial
 
     def calcul(self, it): ### permet de trouver la largeur du rectangle
         """
