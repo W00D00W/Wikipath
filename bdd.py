@@ -1,11 +1,6 @@
 #importation librairies
 import sqlite3
-import tkinter as tk
 from tkinter import messagebox
-import atexit
-
-
-
 
 bdd = sqlite3.connect("base_de_donne")
 curseur = bdd.cursor()
@@ -17,8 +12,6 @@ def erreur(text_erreur):
     ne renvoie rien
     """
     messagebox.showerror("Erreur", text_erreur)
-
-
 
 #fonction pour qu'un client S'inscrive au site 
 def sign_up(id, mdp, avatar):
@@ -41,8 +34,6 @@ def sign_up(id, mdp, avatar):
         curseur.execute(""" INSERT INTO user VALUES ("%s", "%s", "%s"); """ % (id, mdp, avatar))
         bdd.commit()
     return autorisation
-
-    
 
 #Fonction mdp oublié
 def mdpoublie(id, nouv_mdp, conf_mdp):
@@ -124,7 +115,6 @@ def chercher_captures(id_user):
     return curseur.fetchall()
 
 
-
 if __name__ == '__main__':
     requete = """
     DROP TABLE IF EXISTS user; 
@@ -133,7 +123,7 @@ if __name__ == '__main__':
     requete = """
     CREATE TABLE user (
     id STRING PRIMARY KEY,
-    mdp STRING
+    mdp STRING,
     avatar STRING
     );
     """

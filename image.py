@@ -35,18 +35,3 @@ def recuperation_image(nom):
 
             return ImageTk.PhotoImage(image)
 
-def configuration_image(objet, image):
-    ### definition taille fenetre
-    if image != None:
-        hauteur = objet.elements['texte'][1].winfo_width()
-        hauteur_img = image.size[1]
-        largeur_img = image.size[0]
-
-
-        largeur = largeur_img*hauteur/hauteur_img
-
-        ### redimensionne l'objet
-        redimension = objet.image.resize((int(round(largeur, 0)), int(round(hauteur,0))), Image.Resampling.LANCZOS)
-
-        return ImageTk.PhotoImage(redimension) ## crée une instance de l'image
-
