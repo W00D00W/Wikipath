@@ -66,6 +66,7 @@ Voici la liste des modules pour pouvoir lancer le projet :
   - `Pillow`: https://pypi.org/project/Pillow/
   - `requests`: https://pypi.org/project/requests/
   - `beautifulsoup`: https://pypi.org/project/beautifulsoup4/
+  
 Les autres modules sont normalements installés automatiquement avec l'installation de python, l'installation des modules ci dessus devrait suffire a faire fonctionner le programme.
 Une fois les modules installé lancer le fichier `main.py` et le programme devrait s'executer correctement.
   
