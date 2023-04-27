@@ -56,7 +56,7 @@ A droite de l’application se trouve un encadré décrivant la page « courant
 ## Installation
 
 #### .exe
-Nous avons mis à disposition on fichier zip contenant un .exe du proprame python. Il est donc entierement utilisable sans installer aucun module ni même avoir installé python sur son ordinateur, les fichiers ont été convertis avec le module `auto-py-to-exe` qui est très facile d'utilisation (lien vers la doc : https://pypi.org/project/auto-py-to-exe/). ! Il se peut que l'antivirus de l'ordinateur bloque l'utilisation du fichier, si cela arrive, nous vous conseillons de le désactiver le temps du test ou simplement de passer par le lancement par python.
+Nous avons mis à disposition un fichier zip contenant un .exe du programme python. Il est donc entierement utilisable sans installer aucun module ni même avoir installé python sur son ordinateur, les fichiers ont été convertis avec le module `auto-py-to-exe` qui est très facile d'utilisation (lien vers la doc : https://pypi.org/project/auto-py-to-exe/). ! Il se peut que l'antivirus de l'ordinateur bloque l'utilisation du fichier, si cela arrive, nous vous conseillons de le désactiver le temps du test ou simplement de passer par le lancement par python.
 #### python
 Pour executer le fichier depuis python il faut avoir installé tout les modules dont le programme a besoin pour fonctionner.
 Voici la liste des modules pour pouvoir lancer le projet : 
