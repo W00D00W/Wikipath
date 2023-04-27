@@ -114,10 +114,17 @@ class menu:
         self.elements['barre_menu'].grid_propagate(False)
         self.elements['bouton_connexion'].grid(row=0, column=0, sticky='W', padx=10)
         self.elements['bouton_quitter'].grid(row=0, column=2, sticky='E', padx=10)
-        self.elements['recherche'].grid(row=0, column=1)
-        self.elements['valeurs'].grid(row=0, column=0)
-        self.elements['valeurs_entre'].grid(row=0, column=1)
-        self.elements['recherche_valide'].grid(row=0, column=5)
+        
+        if self.elements['valeurs'].get() != 'prédefinie':
+            self.elements['recherche'].grid(row=0, column=1)
+
+            # ## réinitialise la valeur deja cliqué
+            self.elements['valeurs'].destroy()
+            self.elements['valeurs'] = customtkinter.CTkSegmentedButton(self.elements['recherche'], values=['prédefinie', 'rechercher'], command= lambda e: self.parent.page_dico['page_interface'].affichage_bouton(e))
+            self.elements['valeurs'].grid(row=0, column=0)
+
+            self.elements['valeurs_entre'].grid(row=0, column=1)
+            self.elements['recherche_valide'].grid(row=0, column=5)
 
     def change_page(self):
         """
@@ -452,6 +459,7 @@ class page_conn(page_tkinter):
         self.image_avatar = None 
         self.description = customtkinter.CTkLabel(self.zone_droite, text='votre avatar sur wikipath')
         self.scrollable_frame = None
+        self.nouvel_avatar = customtkinter.CTkButton(self.zone_droite, text='générer un nouvel avatar', command=self.regeneration_avatar)
 
     def affichage(self):
         """
@@ -493,6 +501,7 @@ class page_conn(page_tkinter):
 
         self.image_avatar.grid(row=0, rowspan=1, column=0, columnspan=1)
         self.description.grid(row=1, column=0)
+        self.nouvel_avatar.grid(row=2, column=0)
 
     def taille(self):
         """
@@ -517,7 +526,7 @@ class page_conn(page_tkinter):
             largeur = int(round(self.parent.hauteur//1.5 * self.image_avatar.winfo_width() / self.image_avatar.winfo_height()))
             self.avatar_chemin = self.avatar_chemin.resize((largeur, int(self.parent.hauteur//1.5)), resample=Image.Resampling.LANCZOS)
             self.image_finale = ImageTk.PhotoImage(self.avatar_chemin)
-            self.image_avatar.configure(height=self.parent.hauteur//1.5, width=largeur, image=self.image_finale)
+            self.image_avatar.configure(image=self.image_finale)
             self.image_avatar.update()
 
             
@@ -527,6 +536,12 @@ class page_conn(page_tkinter):
         """
         self.parent.page_dico['page_interface'].gen_page(page[0])
         self.parent.changement_page('page_interface')
+
+    def regeneration_avatar(self):
+        aleatoire = random.randint(1,13) ## choisi un nombre aléatoire
+        changer_avatar(self.parent.utilisateur, str('avatar/'+str(aleatoire)+'.jpg')) ## change dans la base de donnée
+        self.image_avatar = None ## réinitialise pour prendre la nouvelle valeur
+        self.parent.changement_page('page_compte') ## recharge la page de compte
 
 class conn(page_tkinter):
     """
@@ -561,16 +576,19 @@ class conn(page_tkinter):
         """
         permet d'afficher tout les widget de la page
         """
-        self.title_label.grid(row=1, column=0, pady=10, columnspan=4)
-        self.id_label.grid(row=2, column=0, columnspan=4)
-        self.id_entry.grid(row=3, column=0, pady=5, columnspan=4)
-        self.mdp_label.grid(row=4, column=0, columnspan=4)
-        self.mdp_entry.grid(row=5, column=0, pady=5, columnspan=4)
-        self.button_frame.grid(row=6, column=0, columnspan=4)
+        if self.parent.utilisateur != '': ## si l'utilisateur est deja connecté alors bascule sur la page de connexion
+            self.parent.changement_page('page_compte')
+        else:
+            self.title_label.grid(row=1, column=0, pady=10, columnspan=4)
+            self.id_label.grid(row=2, column=0, columnspan=4)
+            self.id_entry.grid(row=3, column=0, pady=5, columnspan=4)
+            self.mdp_label.grid(row=4, column=0, columnspan=4)
+            self.mdp_entry.grid(row=5, column=0, pady=5, columnspan=4)
+            self.button_frame.grid(row=6, column=0, columnspan=4)
 
-        self.login_button.pack(side="left", padx=10, pady=20)
-        self.signup_button.pack(side="left", padx=10, pady=20)
-        self.oublie_button.pack(side="left", padx=10, pady=20)
+            self.login_button.pack(side="left", padx=10, pady=20)
+            self.signup_button.pack(side="left", padx=10, pady=20)
+            self.oublie_button.pack(side="left", padx=10, pady=20)
 
     def connexion(self, id, mdp):
         """
@@ -587,7 +605,7 @@ class conn(page_tkinter):
         if sign_up(id, mdp, str('avatar/'+str(random.randint(1, 13))+'.jpg')):
             self.parent.utilisateur = str(id)
             self.parent.changement_page('page_compte')
-            
+
 class mdp_oubli(page_tkinter):
     """
     page de changement de mot de passe

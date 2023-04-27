@@ -24,8 +24,8 @@ class pile:
         """
         # self.pile[-1].x, self.pile[-1].y = 200, 500
         for v in self.pile:
-            v.x -= v.x - x
-            v.y += v.y - y
+            v.x -= x
+            v.y -=- y
 
     def retour_arriere(self, obj):
         """

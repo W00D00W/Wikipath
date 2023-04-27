@@ -114,6 +114,14 @@ def chercher_captures(id_user):
     curseur.execute(requete, (id_user,))
     return curseur.fetchall()
 
+def changer_avatar(id_user, avatar):
+    requete = """
+    UPDATE user 
+    SET avatar = ?
+    WHERE id = ?;
+    """
+    curseur.execute(requete, (avatar, id_user))
+    bdd.commit()
 
 if __name__ == '__main__':
     requete = """
