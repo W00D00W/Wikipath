@@ -55,6 +55,33 @@ A droite de l’application se trouve un encadré décrivant la page « courant
  
 ## Installation
 
-.exe ?
-
+#### .exe
+Nous avons mis à disposition on fichier zip contenant un .exe du proprame python. Il est donc entierement utilisable sans installer aucun module ni même avoir installé python sur son ordinateur, les fichiers ont été convertis avec le module `auto-py-to-exe` qui est très facile d'utilisation (lien vers la doc : https://pypi.org/project/auto-py-to-exe/). ! Il se peut que l'antivirus de l'ordinateur bloque l'utilisation du fichier, si cela arrive, nous vous conseillons de le désactiver le temps du test ou simplement de passer par le lancement par python.
+#### python
+Pour executer le fichier depuis python il faut avoir installé tout les modules dont le programme a besoin pour fonctionner.
+Voici la liste des modules pour pouvoir lancer le projet : 
+  - `customtkinter`: https://pypi.org/project/customtkinter/0.3/
+  - `wikipediaapi`: https://pypi.org/project/Wikipedia-API/
+  - `PyQt6`: https://pypi.org/project/PyQt6/
+  - `Pillow`: https://pypi.org/project/Pillow/
+  - `requests`: https://pypi.org/project/requests/
+  - `beautifulsoup`: https://pypi.org/project/beautifulsoup4/
+Les autres modules sont normalements installés automatiquement avec l'installation de python, l'installation des modules ci dessus devrait suffire a faire fonctionner le programme.
+Une fois les modules installé lancer le fichier `main.py` et le programme devrait s'executer correctement.
+  
 ## Utilisation
+Le programme fonctionne comme une application avec une interface utilisateur.
+
+### dans le graphe
+#### double clic 
+Pour changer de noeud et afficher le nouveau noeud sur lequel l'utilisateur viens de cliquer
+#### clic sur un noeud
+Pour le déplacer dans le canvas
+#### clic sur un espace vide
+Pour déplacer l'ensemble des éléments
+
+### dans l'application
+#### navigation à l'aide des boutons
+La navigation hors du canvas est assez intuitive, suivez simplement ce qu'il y à écrit sur les boutons.
+
+Bonne utilisation :D

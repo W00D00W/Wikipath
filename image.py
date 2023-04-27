@@ -3,7 +3,6 @@ from PIL import ImageTk, Image
 import requests
 from io import BytesIO
 from bs4 import BeautifulSoup
-import customtkinter
 import urllib.request
 
 

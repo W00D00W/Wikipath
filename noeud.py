@@ -1,8 +1,6 @@
 #importation librairies
 from tkinter import *
 
-
-
 class bulle:
     """
     un objet represantant un noeud sur le canvas
