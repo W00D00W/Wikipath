@@ -75,6 +75,7 @@ class bulle:
         """
         couleur = '#4E5058'
         if self.etat != True: ## si appartient a la pile (noeud visité precedement)
+
             if obj.voisins[obj.voisins.index(self)+1].etat == False: ## si le prochain voisin appartient egalement a la pile (noeud visité precedement)
                 obj = obj.voisins[obj.voisins.index(self)+1] ## obj devient l'obj suivant au lieu d'etre le noeud du milieu
         self.affichage.append(it.canvas.create_line(obj.x+obj.largeur/2, obj.y+obj.hauteur/2, self.x+self.largeur/2, self.y+self.hauteur/2, fill=couleur, tag='graphe', width=1.5)) ## affiche le tracé
@@ -148,7 +149,8 @@ class bulle:
 
     def contient(self, x, y):
         """
-        x, y : floats; renvoie une True si la position x y est comprise dans la hitbox de l'objet, False sinon
+        x, y : deux entiers correspondant a des coordonées
+        renvoie une True si la position x y est comprise dans la hitbox de l'objet, False sinon
         """
         if self.x < x and self.x+self.largeur > x and self.y < y and self.y+self.hauteur > y:
             return True
@@ -177,8 +179,9 @@ class noeud(bulle):
 
         super().affichage_noeud(it, obj, val) ## affiche le noeud
 
+        
+
         if self.etat == True: ## si noeud correspond au noeud central
-            
             [v.affichage_noeud(it, obj, val) for v in self.voisins] ## affiche tout les voisins
             [v.ajout_lien(it, self) for v in self.voisins] ## affiche tout les liens
 
@@ -187,10 +190,6 @@ class noeud(bulle):
             for v in self.voisins:
                 for i in range(2):
                     it.canvas.tag_raise(v.affichage[i]) ## fait passer le rectangle et le texte devant le trait
-
-        
-
-
 
     def ajout_voisin(self, voisin):
         if voisin not in self.voisins:

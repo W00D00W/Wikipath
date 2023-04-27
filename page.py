@@ -99,23 +99,24 @@ class graphe:
     def graphe(self, obj, co = True):
         """
         obj : un noeud contenant une page wikipedia ainsi que ses voisins
+        calcul la position de chaque elements
         """
-        
-        position = [500,480]
-        obj.x, obj.y = position[0], position[1] ## objet repositionne au milieu
-        lst_angle = [el*(360 / len(obj.voisins)) for el in range(len(obj.voisins))] ##
+        if co == True: ## regarde si besoin de recalculer les positions ou non
+            position = [500,480]
+            obj.x, obj.y = position[0], position[1] ## objet repositionne au milieu
+            lst_angle = [el*(360 / len(obj.voisins)) for el in range(len(obj.voisins))] ##
 
-        lst_cercle = self.nbr_cercle(obj.voisins) ## separe la liste en nombre de cercle voulu
-        lst_cercle = [[lst_cercle[el]]+[100*(1+el)] for el in range(len(lst_cercle))] ## creation d'une liste avec la liste d'element et son rayon
+            lst_cercle = self.nbr_cercle(obj.voisins) ## separe la liste en nombre de cercle voulu
+            lst_cercle = [[lst_cercle[el]]+[100*(1+el)] for el in range(len(lst_cercle))] ## creation d'une liste avec la liste d'element et son rayon
 
-        ## determine la position de chaque elements sur le canvas en les disposant autour de l'element au centre
-        while len(lst_cercle[0][0]) > 0: ## tant qu'il y a des elements dans le premier cercle
-            for i in range(len(lst_cercle)):
-                for j in range(1+i):
-                    if lst_cercle[i][0] != []:
-                        obj.voisins.append(lst_cercle[i][0].pop(0))
-                        obj.voisins[-1].x = obj.x + lst_cercle[i][1] * math.cos(lst_angle[0]*math.pi / 180)
-                        obj.voisins[-1].y = obj.y + lst_cercle[i][1] * math.sin(lst_angle.pop(0)*math.pi / 180)
+            ## determine la position de chaque elements sur le canvas en les disposant autour de l'element au centre
+            while len(lst_cercle[0][0]) > 0: ## tant qu'il y a des elements dans le premier cercle
+                for i in range(len(lst_cercle)):
+                    for j in range(1+i):
+                        if lst_cercle[i][0] != []:
+                            obj.voisins.append(lst_cercle[i][0].pop(0))
+                            obj.voisins[-1].x = obj.x + lst_cercle[i][1] * math.cos(lst_angle[0]*math.pi / 180)
+                            obj.voisins[-1].y = obj.y + lst_cercle[i][1] * math.sin(lst_angle.pop(0)*math.pi / 180)
           
         self.parent.zone_droite.affichage_page(obj) ## modifie l'affichage du widget avec les parametres du nouveau noeud
         self.pile.affiche_pile(obj) ## affiche les anciens noeud ou l'utilisateur a cliqué

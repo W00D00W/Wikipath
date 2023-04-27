@@ -22,10 +22,11 @@ class pile:
         x, y deux entiers correspondant a des coordonées
         deplace chaque noeud de x et y 
         """
+        # self.pile[-1].x, self.pile[-1].y = 200, 500
         for v in self.pile:
-            v.x -= x
-            v.y -= -y
-        
+            v.x -= v.x - x
+            v.y += v.y - y
+
     def retour_arriere(self, obj):
         """
         obj : un noeud correspondant a un noeud stocké dans la pile

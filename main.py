@@ -258,6 +258,7 @@ class interface(page_tkinter):
         self.pos = [0,0]
         self.image_page = None
         self.zone_droite = zone_droite(self)
+        self.changement_texte = None
 
         ### canvas
         self.canvas = Canvas(self.tk, bg="white")
@@ -298,7 +299,9 @@ class interface(page_tkinter):
         self.zone_droite.elements['texte'][2].configure(width=largeur_frame-largeur_frame/4) ## correspond au widget de texte
         self.tk.update()
 
-        self.zone_droite.formatage_texte() ## met a jour l'affichage du texte
+        if self.page.page_courante.val != self.changement_texte:
+            self.zone_droite.formatage_texte() ## met a jour l'affichage du texte
+            self.changement_texte = self.page.page_courante.val
         self.zone_droite.taille() ## met a jour les widget dans l'objet zone_droite
 
     def affichage_bouton(self, values):
@@ -391,7 +394,8 @@ class interface(page_tkinter):
                     if self.page.page_courante.val in [v.val for v in self.graphe.pile.pile]:
                         self.graphe.pile.pile[:-2]
                     self.graphe.graphe(self.page.page_courante)
-                break
+                [self.parent.taille() for i in range(2)]
+                break ## ahahaha on l'a laissé pour la blague
     
     def item_bouge(self, event):
         """
